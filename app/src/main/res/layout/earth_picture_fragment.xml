@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/earth_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/date_taken"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="06-05-2018"/>
+        <TextView
+            android:id="@+id/cloud_coverage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:gravity="end"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="30%"/>
+    </LinearLayout>
+
+</RelativeLayout>

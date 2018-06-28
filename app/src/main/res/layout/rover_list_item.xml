@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="170dp"
+    android:layout_height="170dp"
+    android:layout_margin="5dp"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/roverImage"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/roverName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rover Name"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/numberOfImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1000"
+        android:textSize="15sp"
+        android:textColor="@android:color/white"/>
+</LinearLayout>
