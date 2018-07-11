@@ -12,7 +12,7 @@
     <string name="get_images">GET IMAGES</string>
 
     <!--Message-->
-    <string name="no_rover_pictures">There are no rover pictures to display</string>
+    <string name="no_image">There are no images to display</string>
 
     <!--Google map API Key-->
     <string name="google_maps_key">AIzaSyAGKMQYpHEBWDIyZkXIcoG_cAb23wbyydY</string>

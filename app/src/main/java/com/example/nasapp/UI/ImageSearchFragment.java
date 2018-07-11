@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,29 +17,24 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.nasapp.InteractionListener;
+import com.example.nasapp.Model.LibraryImage.LibraryImageCollection;
 import com.example.nasapp.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ImageSearchFragment extends Fragment {
     private static final String TAG = ImageSearchFragment.class.getSimpleName();
-    private static final String ARG = "image_list";
+    private static final String ARG = "library_image_collection";
     private static final int SPEECH_REQUEST_CODE = 0;
 
     View view;
-    RecyclerView recyclerView;
-    ImageSearchAdapter adapter;
-    LinearLayoutManager layoutManager;
-    TextView rightArrow_tv;
-    TextView leftArrow_tv;
     EditText searchBox_et;
     ImageButton voice_bt;
     ImageButton search_bt;
 
-    ArrayList<String> imageList;
+    LibraryImageCollection libraryImageCollection;
     InteractionListener listener;
     InputMethodManager imm;
 
@@ -51,10 +44,10 @@ public class ImageSearchFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ImageSearchFragment newInstance(ArrayList<String> imageList) {
+    public static ImageSearchFragment newInstance(LibraryImageCollection libraryImageCollection) {
         ImageSearchFragment fragment = new ImageSearchFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG, imageList);
+        args.putParcelable(ARG, libraryImageCollection);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,7 +57,7 @@ public class ImageSearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
         if (getArguments() != null) {
-            imageList = getArguments().getStringArrayList(ARG);
+            libraryImageCollection = getArguments().getParcelable(ARG);
         }
     }
 
@@ -73,9 +66,6 @@ public class ImageSearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG,"onCreateView");
         view = inflater.inflate(R.layout.image_search_fragment,container,false);
-        recyclerView = view.findViewById(R.id.image_recycler_view);
-        rightArrow_tv = view.findViewById(R.id.right_arrow);
-        leftArrow_tv = view.findViewById(R.id.left_arrow);
         searchBox_et = view.findViewById(R.id.search_box);
         voice_bt = view.findViewById(R.id.voice_bt);
         search_bt = view.findViewById(R.id.search_bt);
@@ -110,7 +100,7 @@ public class ImageSearchFragment extends Fragment {
                     keyword = (searchBox_et.getText().toString());
                     searchBox_et.setText(keyword);
                     imm.hideSoftInputFromWindow(searchBox_et.getWindowToken(), 0);
-
+                    searchBox_et.setCursorVisible(false);
 
                     return true;
                 }
@@ -136,19 +126,6 @@ public class ImageSearchFragment extends Fragment {
             }
         });
 
-        adapter = new ImageSearchAdapter(imageList, listener);
-        layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
-
-        /*TODO: Detect first and last recycler view item and set visibility of arrows accordingly.*/
-
-        int firstVisiblePosition =layoutManager.findFirstCompletelyVisibleItemPosition();
-        int lastVisiblePosition =layoutManager.findLastCompletelyVisibleItemPosition();
-
-        /*if (firstItemIsVisible){ right_arrow_VISIBLE }
-        * if (!firstItemIsVisible || !lastItemIsVisible) { right_arrow_VISIBLE and left_arrow_VISIBLE }
-        * if (lastItemIsVisible) { left_arrow_VISIBLE }*/
     }
 
     @Override

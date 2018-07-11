@@ -2,21 +2,15 @@ package com.example.nasapp.UI;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.nasapp.InteractionListener;
@@ -31,7 +25,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -43,17 +36,14 @@ public class LocationPickFragment extends Fragment {
     TextView latitude_tv;
     TextView longitude_tv;
     EditText datePicked_et;
-    Spinner periodPicked_sp;
     Button getEarthImage_bt;
 
     Calendar calendar;
     DatePickerDialog.OnDateSetListener datePicker;
-    ArrayList<String> periodList;
     LatLng currentLocation;
     InteractionListener listener;
     GoogleMap googleMap;
 
-    String selectedPeriod;
     String selectedDate;
 
     public LocationPickFragment() {
@@ -77,12 +67,6 @@ public class LocationPickFragment extends Fragment {
             currentLocation = getArguments().getParcelable(ARG);
         }
 
-        periodList = new ArrayList<>();
-        periodList.add("Select a period...");
-        periodList.add("1 day");
-        periodList.add("1 week");
-        periodList.add("1 month");
-        periodList.add("1 year");
     }
 
     @Override
@@ -91,10 +75,11 @@ public class LocationPickFragment extends Fragment {
         Log.d(TAG, "onCreateView");
         view = inflater.inflate(R.layout.location_pick_fragment, container, false);
         datePicked_et = view.findViewById(R.id.date_picked);
-        periodPicked_sp = view.findViewById(R.id.period_picked);
         latitude_tv = view.findViewById(R.id.latitude);
         longitude_tv = view.findViewById(R.id.longitude);
         getEarthImage_bt = view.findViewById(R.id.get_earth_images);
+
+        getEarthImage_bt.setVisibility(View.GONE);
 
         /*Zoom in the map and center the map on current user currentLocation.*/
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
@@ -122,7 +107,8 @@ public class LocationPickFragment extends Fragment {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, day);
-                String myFormat = "MM/dd/yyyy";
+//                String myFormat = "MM/dd/yyyy";
+                String myFormat = "yyyy-MM-dd";
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(myFormat, Locale.US);
                 String date = simpleDateFormat.format(calendar.getTime());
                 datePicked_et.setText(date);
@@ -134,38 +120,6 @@ public class LocationPickFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 new DatePickerDialog(getActivity(), datePicker, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
-        /*Create select period spinner*/
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_period_item, periodList){
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0;
-            }
-            @Override
-            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView,parent);
-                TextView period_tv = (TextView) view;
-                if(position == 0){
-                    period_tv.setTextColor(Color.LTGRAY);
-                }else{
-                    period_tv.setTextColor(Color.BLACK);
-                }
-                return view;
-            }
-        };
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_period_item);
-        periodPicked_sp.setAdapter(spinnerArrayAdapter);
-        periodPicked_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedPeriod = (String) parent.getItemAtPosition(position);
-                checkGetEarthImageButtonVisibility();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
@@ -211,17 +165,17 @@ public class LocationPickFragment extends Fragment {
     }
 
     private void checkGetEarthImageButtonVisibility() {
-        if(selectedDate!=null && selectedPeriod!="Select a period..."){
+
+        if(selectedDate==null||selectedDate.isEmpty()){
+            getEarthImage_bt.setVisibility(View.GONE);
+        }else {
             getEarthImage_bt.setVisibility(View.VISIBLE);
             getEarthImage_bt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onStartEarthImageryInteraction(currentLocation,selectedDate,selectedPeriod);
+                    listener.onGetEarthImageryInteraction(currentLocation,selectedDate);
                 }
             });
-
-        }else {
-            getEarthImage_bt.setVisibility(View.GONE);
         }
     }
 }

@@ -26,13 +26,13 @@ import com.example.nasapp.R;
 
 import java.util.ArrayList;
 
-public class MarsPictureListFragment extends Fragment {
-    private static final String TAG = MarsPictureListFragment.class.getSimpleName();
+public class RoverImageSearchFragment extends Fragment {
+    private static final String TAG = RoverImageSearchFragment.class.getSimpleName();
     private static final String ARG = "rover";
 
     View view;
-    EditText solPicked_et;
-    Spinner cameraPicked_sp;
+    EditText solSettingSelect_et;
+    Spinner cameraSettingSelect_sp;
     Button getMarsImage_bt;
 
     ArrayList<String> cameraList;
@@ -40,15 +40,15 @@ public class MarsPictureListFragment extends Fragment {
     Rover rover;
     InputMethodManager imm;
 
-    String selectedSol;
-    String selectedCamera;
+    String solSetting;
+    String cameraSetting;
 
-    public MarsPictureListFragment() {
+    public RoverImageSearchFragment() {
         // Required empty public constructor
     }
 
-    public static MarsPictureListFragment newInstance(Rover rover) {
-        MarsPictureListFragment fragment = new MarsPictureListFragment();
+    public static RoverImageSearchFragment newInstance(Rover rover) {
+        RoverImageSearchFragment fragment = new RoverImageSearchFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG, rover);
         fragment.setArguments(args);
@@ -61,39 +61,31 @@ public class MarsPictureListFragment extends Fragment {
         Log.d(TAG, "onCreate");
         if (getArguments() != null) {
             rover = getArguments().getParcelable(ARG);
+            cameraList = rover.getCameraList();
         }
-
-        cameraList = new ArrayList<>();
-        cameraList.add("Select a camera...");
-        cameraList.add("Front Hazard Avoidance Camera");
-        cameraList.add("Navigation Camera");
-        cameraList.add("Panoramic Camera");
-        cameraList.add("Thermal Emmision Spectrometer");
-        cameraList.add("Entry, Decent, Landing Camera");
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
-        view = inflater.inflate(R.layout.mars_picture_list_fragment, container, false);
-        solPicked_et = view.findViewById(R.id.sol_picked);
-        cameraPicked_sp = view.findViewById(R.id.camera_picked);
+        view = inflater.inflate(R.layout.rover_image_search_fragment, container, false);
+        solSettingSelect_et = view.findViewById(R.id.sol_setting_select);
+        cameraSettingSelect_sp = view.findViewById(R.id.camera_setting_select);
         getMarsImage_bt = view.findViewById(R.id.get_mars_images);
-
 
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        solPicked_et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        solSettingSelect_et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    selectedSol = (solPicked_et.getText().toString());
-                    solPicked_et.setText(selectedSol);
+                    solSetting = (solSettingSelect_et.getText().toString());
+                    rover.setSolSetting(solSetting);
+                    solSettingSelect_et.setText(solSetting);
                     checkStartButtonVisibility();
-                    imm.hideSoftInputFromWindow(solPicked_et.getWindowToken(), 0);
+                    imm.hideSoftInputFromWindow(solSettingSelect_et.getWindowToken(), 0);
+                    solSettingSelect_et.setCursorVisible(false);
                     return true;
                 }
                 return false;
@@ -109,21 +101,22 @@ public class MarsPictureListFragment extends Fragment {
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView,parent);
-                TextView period_tv = (TextView) view;
+                TextView camera_tv = (TextView) view;
                 if(position == 0){
-                    period_tv.setTextColor(Color.LTGRAY);
+                    camera_tv.setTextColor(Color.DKGRAY);
                 }else{
-                    period_tv.setTextColor(Color.BLACK);
+                    camera_tv.setTextColor(Color.WHITE);
                 }
                 return view;
             }
         };
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_period_item);
-        cameraPicked_sp.setAdapter(spinnerArrayAdapter);
-        cameraPicked_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_camera_item);
+        cameraSettingSelect_sp.setAdapter(spinnerArrayAdapter);
+        cameraSettingSelect_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedCamera = (String) parent.getItemAtPosition(position);
+                cameraSetting = (String) parent.getItemAtPosition(position);
+                rover.setCameraSetting(cameraSetting);
                 checkStartButtonVisibility();
             }
 
@@ -131,6 +124,7 @@ public class MarsPictureListFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
 
         return view;
     }
@@ -153,6 +147,7 @@ public class MarsPictureListFragment extends Fragment {
         super.onResume();
         Log.d(TAG, "onResume");
 
+
     }
 
     @Override
@@ -163,17 +158,16 @@ public class MarsPictureListFragment extends Fragment {
     }
 
     private void checkStartButtonVisibility() {
-        if(selectedSol!=null && selectedCamera!="Select a camera..."){
+        if(solSetting ==null|| solSetting.isEmpty()|| cameraSetting =="Select a camera..."){
+            getMarsImage_bt.setVisibility(View.GONE);
+        }else {
             getMarsImage_bt.setVisibility(View.VISIBLE);
             getMarsImage_bt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onGetRoverImageryInteraction(true);
+                    listener.onGetRoverImageryInteraction(rover);
                 }
             });
-
-        }else {
-            getMarsImage_bt.setVisibility(View.GONE);
         }
     }
 }

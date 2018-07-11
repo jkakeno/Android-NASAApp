@@ -8,7 +8,8 @@ public interface InteractionListener {
 
     void onCoverSelectInteraction(Cover cover);
     void onRoverSelectInteraction(Rover rover);
-    void onStartEarthImageryInteraction(LatLng currentLocation, String date, String period);
-    void onGetRoverImageryInteraction(boolean click);
+//    void onGetEarthImageryInteraction(LatLng currentLocation, String date, String period);
+    void onGetEarthImageryInteraction(LatLng currentLocation, String date);
+    void onGetRoverImageryInteraction(Rover rover);
     void onSearchImageryInteraction(String keyword);
 }

@@ -32,7 +32,6 @@ public class RoverListAdapter extends RecyclerView.Adapter<RoverListAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Rover rover = roverList.get(position);
         holder.rover_name_tv.setText(rover.getRoverName());
-        holder.number_of_images_tv.setText(rover.getNumberOfImages());
         holder.rover_image.setImageURI(rover.getRoverImageUri());
 
         holder.rover_image.setOnClickListener(new View.OnClickListener() {
@@ -57,13 +56,11 @@ public class RoverListAdapter extends RecyclerView.Adapter<RoverListAdapter.View
 
         ImageView rover_image;
         TextView rover_name_tv;
-        TextView number_of_images_tv;
 
         public ViewHolder(View itemView) {
             super(itemView);
             rover_image=itemView.findViewById(R.id.roverImage);
             rover_name_tv =itemView.findViewById(R.id.roverName);
-            number_of_images_tv =itemView.findViewById(R.id.numberOfImages);
 
         }
     }

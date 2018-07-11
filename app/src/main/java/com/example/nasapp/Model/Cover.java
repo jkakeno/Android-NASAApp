@@ -4,24 +4,28 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import retrofit2.http.Url;
+import java.util.ArrayList;
 
 public class Cover implements Parcelable{
 
-    Url imageUrl;
+    String imageUrl;
     Uri imageResource;
     String coverTitle;
     String imageTitle;
+    Apod apod;
+    ArrayList<Epic> epicImageList;
 
-    public Cover(String coverTitle, String imageTitle) {
+
+    public Cover(String coverTitle) {
         this.coverTitle = coverTitle;
-        this.imageTitle = imageTitle;
     }
 
     protected Cover(Parcel in) {
+        imageUrl = in.readString();
         imageResource = in.readParcelable(Uri.class.getClassLoader());
         coverTitle = in.readString();
         imageTitle = in.readString();
+        apod = in.readParcelable(Apod.class.getClassLoader());
     }
 
     public static final Creator<Cover> CREATOR = new Creator<Cover>() {
@@ -36,11 +40,11 @@ public class Cover implements Parcelable{
         }
     };
 
-    public Url getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(Url imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -68,6 +72,22 @@ public class Cover implements Parcelable{
         this.imageTitle = imageTitle;
     }
 
+    public ArrayList<Epic> getEpicImageList() {
+        return epicImageList;
+    }
+
+    public void setEpicImageList(ArrayList<Epic> epicImageList) {
+        this.epicImageList = epicImageList;
+    }
+
+    public Apod getApod() {
+        return apod;
+    }
+
+    public void setApod(Apod apod) {
+        this.apod = apod;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -75,8 +95,10 @@ public class Cover implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(imageUrl);
         parcel.writeParcelable(imageResource, i);
         parcel.writeString(coverTitle);
         parcel.writeString(imageTitle);
+        parcel.writeParcelable(apod, i);
     }
 }

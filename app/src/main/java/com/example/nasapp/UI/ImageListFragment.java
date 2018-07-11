@@ -3,8 +3,7 @@ package com.example.nasapp.UI;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,32 +11,30 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.nasapp.InteractionListener;
-import com.example.nasapp.Model.Cover;
+import com.example.nasapp.Model.LibraryImage.LibraryImageCollection;
 import com.example.nasapp.R;
 
-import java.util.ArrayList;
-
-public class CoverListFragment extends Fragment {
-    private static final String TAG = CoverListFragment.class.getSimpleName();
-    private static final String ARG = "cover_list";
+public class ImageListFragment extends Fragment {
+    private static final String TAG = ImageListFragment.class.getSimpleName();
+    private static final String ARG = "library_image_collection";
 
     View view;
-    RecyclerView recyclerView;
-    CoverListAdapter adapter;
-    LinearLayoutManager layoutManager;
-    TextView nasaIcon_tv;
+    ViewPager viewPager;
+    ImageListAdapter adapter;
+    TextView no_image_tv;
 
-    ArrayList<Cover> coverList;
+    LibraryImageCollection libraryImageCollection;
     InteractionListener listener;
 
-    public CoverListFragment() {
+
+    public ImageListFragment() {
         // Required empty public constructor
     }
 
-    public static CoverListFragment newInstance(ArrayList<Cover> coverList) {
-        CoverListFragment fragment = new CoverListFragment();
+    public static ImageListFragment newInstance(LibraryImageCollection libraryImageCollection) {
+        ImageListFragment fragment = new ImageListFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG, coverList);
+        args.putParcelable(ARG, libraryImageCollection);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,7 +44,7 @@ public class CoverListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
         if (getArguments() != null) {
-            coverList = getArguments().getParcelableArrayList(ARG);
+            libraryImageCollection = getArguments().getParcelable(ARG);
         }
     }
 
@@ -55,9 +52,17 @@ public class CoverListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG,"onCreateView");
-        view = inflater.inflate(R.layout.cover_list_fragment,container,false);
-        recyclerView = view.findViewById(R.id.cover_list);
-        nasaIcon_tv = view.findViewById(R.id.nasa_icon);
+        view = inflater.inflate(R.layout.image_list_fragment,container,false);
+        viewPager = view.findViewById(R.id.viewPager);
+        no_image_tv = view.findViewById(R.id.no_image);
+
+        if(libraryImageCollection!=null) {
+            no_image_tv.setVisibility(View.GONE);
+            adapter = new ImageListAdapter(getActivity(), libraryImageCollection, listener);
+            viewPager.setAdapter(adapter);
+        }else{
+            no_image_tv.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -73,8 +78,6 @@ public class CoverListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d(TAG,"onPause");
-        /*Call this to trigger onDetachedFromRecyclerView() in adapter, so that the observable can be disposed.*/
-        recyclerView.getAdapter().onDetachedFromRecyclerView(recyclerView);
     }
 
     @Override
@@ -82,13 +85,7 @@ public class CoverListFragment extends Fragment {
         super.onResume();
         Log.d(TAG,"onResume");
 
-        adapter = new CoverListAdapter(getActivity(),coverList, listener);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
     }
-
-
 
     @Override
     public void onDetach() {

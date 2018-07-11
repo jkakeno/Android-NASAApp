@@ -3,6 +3,7 @@ package com.example.nasapp.UI;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,29 +12,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nasapp.InteractionListener;
-import com.example.nasapp.Model.Cover;
+import com.example.nasapp.Model.Apod;
 import com.example.nasapp.R;
+import com.squareup.picasso.Picasso;
 
 public class ApodFragment extends Fragment {
     private static final String TAG = ApodFragment.class.getSimpleName();
     private static final String ARG = "cover";
 
     View view;
-    ImageView apodImage;
-    TextView apodTitle;
-    TextView apodDescription;
+    ImageView apodImage_iv;
+    TextView apodTitle_tv;
+    TextView apodExplanation_tv;
 
-    Cover cover;
+    Apod apod;
     InteractionListener listener;
 
     public ApodFragment() {
         // Required empty public constructor
     }
 
-    public static ApodFragment newInstance(Cover cover) {
+    public static ApodFragment newInstance(Apod apod) {
         ApodFragment fragment = new ApodFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG, cover);
+        args.putParcelable(ARG, apod);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,7 +45,7 @@ public class ApodFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
         if (getArguments() != null) {
-            cover = getArguments().getParcelable(ARG);
+            apod = getArguments().getParcelable(ARG);
         }
     }
 
@@ -52,9 +54,10 @@ public class ApodFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG,"onCreateView");
         view = inflater.inflate(R.layout.apod_fragment,container,false);
-        apodImage = view.findViewById(R.id.apod_image);
-        apodTitle = view.findViewById(R.id.apod_title);
-        apodDescription = view.findViewById(R.id.apod_description);
+        apodImage_iv = view.findViewById(R.id.apod_image);
+        apodTitle_tv = view.findViewById(R.id.apod_title);
+        apodExplanation_tv = view.findViewById(R.id.apod_explanation);
+        apodExplanation_tv.setMovementMethod(new ScrollingMovementMethod());
 
         return view;
     }
@@ -76,9 +79,9 @@ public class ApodFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume");
-        apodImage.setImageURI(cover.getImageResource());
-        apodTitle.setText(cover.getImageTitle());
-
+        Picasso.with(getActivity()).load(apod.getUrl()).fit().centerCrop().into(apodImage_iv);
+        apodTitle_tv.setText(apod.getTitle());
+        apodExplanation_tv.setText(apod.getExplanation());
     }
 
     @Override
