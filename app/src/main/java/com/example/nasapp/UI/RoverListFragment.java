@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import com.example.nasapp.InteractionListener;
 import com.example.nasapp.Model.Rover;
@@ -56,6 +58,15 @@ public class RoverListFragment extends Fragment {
         view = inflater.inflate(R.layout.rover_list_fragment,container,false);
         recyclerView = view.findViewById(R.id.rover_list);
 
+        adapter = new RoverListAdapter(roverList, listener);
+        layoutManager = new GridLayoutManager(getActivity(),2);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+        /*Apply animation to views.*/
+        LayoutAnimationController layoutAnimationFromBottom = AnimationUtils.loadLayoutAnimation(getActivity(), R.anim.layout_animation_from_bottom);
+        recyclerView.setLayoutAnimation(layoutAnimationFromBottom);
+
         return view;
     }
 
@@ -76,11 +87,6 @@ public class RoverListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume");
-
-        adapter = new RoverListAdapter(roverList, listener);
-        layoutManager = new GridLayoutManager(getActivity(),2);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override

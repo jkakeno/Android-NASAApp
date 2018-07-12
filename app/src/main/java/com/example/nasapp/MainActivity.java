@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -17,7 +18,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.nasapp.Model.Apod;
 import com.example.nasapp.Model.ApodAndEpic;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                         + "Longitude: " + new DecimalFormat("###.######").format(currentLocation.longitude));
 
                 LocationPickFragment locationPickFragment = LocationPickFragment.newInstance(currentLocation);
-                fragmentManager.beginTransaction().add(R.id.root, locationPickFragment, LOCATION_PICK_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
+                fragmentManager.beginTransaction().replace(R.id.root, locationPickFragment, LOCATION_PICK_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
 
                 wantLocation=false;
             }
@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "ApodEpic Observable onError()");
+                /*TODO: Add observable error dialog.*/
             }
 
             @Override
@@ -286,10 +287,11 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     public void onCoverSelectInteraction(Cover cover) {
         String coverTitle = cover.getCoverTitle();
 
+        /*Replace each cover fragment with root and add cover list fragment to the back stack so that cover list fragment's onCreateView is called when back button is pushed and animation is played.*/
         switch (coverTitle) {
             case "APOD":
                 ApodFragment apodFragment = ApodFragment.newInstance(apod);
-                fragmentManager.beginTransaction().add(R.id.root, apodFragment, APOD_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
+                fragmentManager.beginTransaction().replace(R.id.root, apodFragment, APOD_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
                 break;
             case "EARTH":
                 /*Check GSP setting*/
@@ -305,21 +307,19 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                     progressDialog.show(fragmentManager,PROGRESS_DIALOG);
                 }else{
                     LocationPickFragment locationPickFragment = LocationPickFragment.newInstance(currentLocation);
-                    fragmentManager.beginTransaction().add(R.id.root, locationPickFragment, LOCATION_PICK_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
+                    fragmentManager.beginTransaction().replace(R.id.root, locationPickFragment, LOCATION_PICK_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
                 }
                 break;
             case "MARS":
                 RoverListFragment roverListFragment = RoverListFragment.newInstance(roverList);
-                fragmentManager.beginTransaction().add(R.id.root, roverListFragment, ROVER_LIST_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
+                fragmentManager.beginTransaction().replace(R.id.root, roverListFragment, ROVER_LIST_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
                 break;
             case "SEARCH":
                 ImageSearchFragment imageSearchFragment = new ImageSearchFragment();
                 ImageListFragment imageListFragment = new ImageListFragment();
-                Fragment coverListFragment = fragmentManager.findFragmentByTag(COVER_LIST_FRAGMENT);
-                int coverListFragmentId = coverListFragment.getId();
 
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(coverListFragmentId,imageSearchFragment,IMAGE_SEARCH_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT);
+                fragmentTransaction.replace(R.id.root,imageSearchFragment,IMAGE_SEARCH_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT);
                 fragmentTransaction.add(R.id.image_list_container,imageListFragment,IMAGE_LIST_FRAGMENT);
                 fragmentTransaction.commit();
 
@@ -420,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                                 @Override
                                 public void onError(Throwable e) {
                                     Log.d(TAG,"Result error: " + e.getMessage());
+                                    /*TODO: Add observable error dialog.*/
                                 }
 
                                 @Override
@@ -433,18 +434,31 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                                     int locationPickFragmentId = locationPickFragment.getId();
                                     EarthImageFragment earthImageFragment = EarthImageFragment.newInstance(earthImages);
                                     fragmentManager.beginTransaction().replace(locationPickFragmentId, earthImageFragment, EARTH_IMAGE_FRAGMENT).addToBackStack(LOCATION_PICK_FRAGMENT).commit();
-                                    /*NOTE: replace allows for onPause to be called when fragment is replaced. onPause is where the progress bar is dismissed.*/
                                 }
                             });
                 }else{
-                    Toast.makeText(MainActivity.this, "There no images available for the selected date or location. Please select another date or location.", Toast.LENGTH_LONG).show();
                     progressDialog.cancel();
+
+//                    Toast.makeText(MainActivity.this, "There aren't images available for the selected date or location. Please select another date or location.", Toast.LENGTH_LONG).show();
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                    alertDialogBuilder.setMessage("There aren't images available for the selected date or location. Please select another date or location.");
+                    alertDialogBuilder.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "Assets Observable onError()"+e.getMessage());
+                /*TODO: Add observable error dialog.*/
             }
 
             @Override
@@ -456,13 +470,14 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
 
     @Override
     public void onRoverSelectInteraction(Rover rover) {
+        /*Replace rover image search fragment with rover list fragment and add rover list fragment to the back stack so that rover list fragment's onCreateView is called when back button is pushed and animation is played.*/
         RoverImageSearchFragment roverImageSearchFragment = RoverImageSearchFragment.newInstance(rover);
         RoverImageListFragment roverImageListFragment =new RoverImageListFragment();
         Fragment roverListFragment = fragmentManager.findFragmentByTag(ROVER_LIST_FRAGMENT);
         int roverListFragmentId = roverListFragment.getId();
 
         FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
-        fragmentTransaction.add(roverListFragmentId, roverImageSearchFragment, ROVER_IMAGE_SEARCH_FRAGMENT).addToBackStack(ROVER_LIST_FRAGMENT);
+        fragmentTransaction.replace(roverListFragmentId, roverImageSearchFragment, ROVER_IMAGE_SEARCH_FRAGMENT).addToBackStack(ROVER_LIST_FRAGMENT);
         fragmentTransaction.add(R.id.mars_image_list_container,roverImageListFragment,ROVER_IMAGE_LIST_FRAGMENT);
         fragmentTransaction.commit();
     }
@@ -503,6 +518,7 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "RoverImages Observable onError()");
+                /*TODO: Add observable error dialog.*/
             }
 
             @Override
@@ -517,36 +533,38 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
 
     @Override
     public void onSearchImageryInteraction(String keyword) {
-
+        if(keyword!=null) {
         /*Get an observable library image collection object when calling image library api.*/
-        Observable<LibraryImageCollection> libraryImageCollectionObservable = imageLibraryAPIInterface.getImageCollectionFromLibrary(keyword).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-        libraryImageCollectionObservable.subscribe(new Observer<LibraryImageCollection>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                Log.d(TAG, "LibraryImageCollection Observable onSubscribed()");
-                disposableImageCollection=d;
-                progressDialog.show(fragmentManager,PROGRESS_DIALOG);
-            }
+            Observable<LibraryImageCollection> libraryImageCollectionObservable = imageLibraryAPIInterface.getImageCollectionFromLibrary(keyword).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            libraryImageCollectionObservable.subscribe(new Observer<LibraryImageCollection>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                    Log.d(TAG, "LibraryImageCollection Observable onSubscribed()");
+                    disposableImageCollection = d;
+                    progressDialog.show(fragmentManager, PROGRESS_DIALOG);
+                }
 
-            @Override
-            public void onNext(LibraryImageCollection libraryImageCollection) {
-                Log.d(TAG, "LibraryImageCollection Observable onNext()");
-                imageCollection=libraryImageCollection;
-            }
+                @Override
+                public void onNext(LibraryImageCollection libraryImageCollection) {
+                    Log.d(TAG, "LibraryImageCollection Observable onNext()");
+                    imageCollection = libraryImageCollection;
+                }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "LibraryImageCollection Observable onError()");
-            }
+                @Override
+                public void onError(Throwable e) {
+                    Log.d(TAG, "LibraryImageCollection Observable onError()");
+                /*TODO: Add observable error dialog.*/
+                }
 
-            @Override
-            public void onComplete() {
-                Log.d(TAG, "LibraryImageCollection Observable onComplete()");
-                progressDialog.cancel();
-                ImageListFragment imageListFragment = ImageListFragment.newInstance(imageCollection);
-                fragmentManager.beginTransaction().replace(R.id.image_list_container, imageListFragment, IMAGE_LIST_FRAGMENT).commit();
-            }
-        });
+                @Override
+                public void onComplete() {
+                    Log.d(TAG, "LibraryImageCollection Observable onComplete()");
+                    progressDialog.cancel();
+                    ImageListFragment imageListFragment = ImageListFragment.newInstance(imageCollection);
+                    fragmentManager.beginTransaction().replace(R.id.image_list_container, imageListFragment, IMAGE_LIST_FRAGMENT).commit();
+                }
+            });
+        }
     }
 
     @Override
@@ -555,10 +573,43 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
             case REQUEST_CODE_ASK_PERMISSIONS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission Granted
-                    Toast.makeText(this,"FINE LOCATION permission granted!",Toast.LENGTH_LONG).show();
+//                    Toast.makeText(this,"FINE LOCATION permission granted!",Toast.LENGTH_LONG).show();
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                    alertDialogBuilder.setMessage("Location permission was granted...");
+                    final AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+                    // Hide after some seconds
+                    final Handler handler  = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (alertDialog.isShowing()) {
+                                alertDialog.dismiss();
+                            }
+                        }
+                    },3000);
+
                 } else {
                     // Permission Denied
-                    Toast.makeText(this,"FINE LOCATION permission denied!",Toast.LENGTH_LONG).show();
+//                    Toast.makeText(this,"FINE LOCATION permission denied!",Toast.LENGTH_LONG).show();
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                    alertDialogBuilder.setMessage("Location permission was denied...");
+                    final AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+                    // Hide after some seconds
+                    final Handler handler  = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (alertDialog.isShowing()) {
+                                alertDialog.dismiss();
+                            }
+                        }
+                    },3000);
                 }
                 break;
             default:

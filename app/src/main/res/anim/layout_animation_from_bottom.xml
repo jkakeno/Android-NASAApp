@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Use animation in item_animation_from_bottom.
+    Each item waits until the animation of the previous item has finish before starting animation.-->
+<layoutAnimation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animation="@anim/item_animation_from_bottom"
+    android:delay="100%"
+    android:animationOrder="normal"/>

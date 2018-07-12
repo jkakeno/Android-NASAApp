@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+     android:fillAfter="true"
+     android:repeatCount="0" >
+
+    <!--Start at completely invisible y-axis position and end at the position defined in the view.xml.
+        Delay the start of animation by 1sec.-->
+    <translate
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromYDelta="200%"
+        android:toYDelta="0%"
+        android:startOffset="1000"/>
+
+</set>

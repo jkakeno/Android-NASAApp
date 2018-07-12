@@ -113,11 +113,13 @@ public class CoverListAdapter extends RecyclerView.Adapter<CoverListAdapter.View
             case "MARS":
                 /*Set the MARS cover image and cover text.*/
                 holder.cover_image.setImageURI(cover.getImageResource());
+                holder.cover_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 holder.image_title.setText(cover.getImageTitle());
                 break;
             case "SEARCH":
                 /*Set the SEARCH cover image and cover text.*/
                 holder.cover_image.setImageURI(cover.getImageResource());
+                holder.cover_image.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 holder.image_title.setText(cover.getImageTitle());
                 break;
         }

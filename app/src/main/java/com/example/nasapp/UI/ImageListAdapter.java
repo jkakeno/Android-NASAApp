@@ -3,6 +3,7 @@ package com.example.nasapp.UI;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,16 @@ import com.squareup.picasso.Picasso;
 
 public class ImageListAdapter extends PagerAdapter {
 
+    View itemView;
+    ImageView imageView;
+    TextView image_title_tv;
+    TextView image_description_tv;
+
     InteractionListener listener;
     LibraryImageCollection libraryImageCollection;
     Context context;
     LayoutInflater layoutInflater;
+    ItemsItem image;
 
     public ImageListAdapter(Context context, LibraryImageCollection libraryImageCollection, InteractionListener listener) {
         this.libraryImageCollection = libraryImageCollection;
@@ -47,18 +54,24 @@ public class ImageListAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View itemView = layoutInflater.inflate(R.layout.image_item, container, false);
-        ImageView imageView = itemView.findViewById(R.id.image);
-        TextView image_title =itemView.findViewById(R.id.title);
-        TextView image_description=itemView.findViewById(R.id.description);
+        itemView = layoutInflater.inflate(R.layout.image_item, container, false);
+        imageView = itemView.findViewById(R.id.image);
+        image_title_tv =itemView.findViewById(R.id.title);
+        image_description_tv =itemView.findViewById(R.id.description);
 
+        /*Get an image.*/
+        image= libraryImageCollection.getCollection().getItems().get(position);
 
-        ItemsItem image= libraryImageCollection.getCollection().getItems().get(position);
-
+        /*Display data.*/
         Picasso.with(context).load(image.getLinks().get(0).getHref()).fit().centerCrop().into(imageView);
-        image_title.setText(image.getData().get(0).getTitle());
-        image_description.setText(image.getData().get(0).getDescription508());
+        image_title_tv.setText(image.getData().get(0).getTitle());
+        image_description_tv.setText(image.getData().get(0).getDescription508());
 
+        /*Allow text view vertical scrolling.*/
+        image_description_tv.setMovementMethod(new ScrollingMovementMethod());
+
+        /*Set marquee text (automatic horizontal scroll).*/
+        image_title_tv.setSelected(true);
 
         container.addView(itemView);
 

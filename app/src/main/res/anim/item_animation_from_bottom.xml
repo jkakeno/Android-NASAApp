@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_longAnimTime">
+
+    <!--Start at y-axis invisible position and end at the position defined in the view.xml.
+        Delay the start of each item animation by 0.5sec.-->
+    <translate
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:fromYDelta="400%"
+        android:toYDelta="0"
+        android:startOffset="500"/>
+
+</set>

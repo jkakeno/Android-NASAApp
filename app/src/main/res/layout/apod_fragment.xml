@@ -17,13 +17,17 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        <!--Marquee text won't work if layout_height is set to 0dp-->
         <TextView
             android:id="@+id/apod_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="25sp"
             android:text="Title"
+            android:ellipsize="marquee"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:marqueeRepeatLimit="marquee_forever"
             android:padding="5dp"/>
 
         <TextView

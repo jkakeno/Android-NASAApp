@@ -7,6 +7,8 @@
     android:layout_margin="5dp"
     android:background="@color/colorPrimary">
 
+    <!--TODO: Space image view so 2 columns fit evenly on any devise.-->
+    <!--TODO: Shadow and elevation attribute.-->
     <ImageView
         android:id="@+id/roverImage"
         android:layout_width="match_parent"

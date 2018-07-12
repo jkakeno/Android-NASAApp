@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.example.nasapp.InteractionListener;
@@ -59,6 +62,17 @@ public class CoverListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.cover_list);
         nasaIcon_tv = view.findViewById(R.id.nasa_icon);
 
+        adapter = new CoverListAdapter(getActivity(),coverList, listener);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+        /*Apply animation to views and list.*/
+        LayoutAnimationController layoutAnimationFromBottom = AnimationUtils.loadLayoutAnimation(getActivity(), R.anim.layout_animation_from_bottom);
+        Animation itemAnimationFallDown = AnimationUtils.loadAnimation(getActivity(), R.anim.item_animation_fall_down);
+        nasaIcon_tv.startAnimation(itemAnimationFallDown);
+        recyclerView.setLayoutAnimation(layoutAnimationFromBottom);
+
         return view;
     }
 
@@ -81,11 +95,6 @@ public class CoverListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume");
-
-        adapter = new CoverListAdapter(getActivity(),coverList, listener);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
     }
 
 

@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -57,7 +59,25 @@ public class ApodFragment extends Fragment {
         apodImage_iv = view.findViewById(R.id.apod_image);
         apodTitle_tv = view.findViewById(R.id.apod_title);
         apodExplanation_tv = view.findViewById(R.id.apod_explanation);
+
+        /*Display data.*/
+        Picasso.with(getActivity()).load(apod.getUrl()).fit().centerCrop().into(apodImage_iv);
+        apodTitle_tv.setText(apod.getTitle());
+        apodExplanation_tv.setText(apod.getExplanation());
+
+        /*Allow vertical scrolling.*/
         apodExplanation_tv.setMovementMethod(new ScrollingMovementMethod());
+
+        /*Set marquee text (text horizontal scroll).*/
+        apodTitle_tv.setSelected(true);
+
+        /*Apply animation to views.*/
+        Animation itemAnimationSlideInFromRight = AnimationUtils.loadAnimation(getActivity(), R.anim.item_animation_slide_in_from_righ);
+        Animation itemAnimationSlideInFromLeft = AnimationUtils.loadAnimation(getActivity(), R.anim.item_animation_slide_in_from_left);
+        Animation itemAnimationSlideInFromBottom = AnimationUtils.loadAnimation(getActivity(), R.anim.item_animation_slide_in_from_bottom);
+        apodImage_iv.startAnimation(itemAnimationSlideInFromRight);
+        apodTitle_tv.startAnimation(itemAnimationSlideInFromLeft);
+        apodExplanation_tv.startAnimation(itemAnimationSlideInFromBottom);
 
         return view;
     }
@@ -79,9 +99,7 @@ public class ApodFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG,"onResume");
-        Picasso.with(getActivity()).load(apod.getUrl()).fit().centerCrop().into(apodImage_iv);
-        apodTitle_tv.setText(apod.getTitle());
-        apodExplanation_tv.setText(apod.getExplanation());
+
     }
 
     @Override
