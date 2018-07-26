@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            android:hint="@string/enter_key_word"
+            android:hint="@string/key_word_hint"
             android:inputType="text"/>
         <ImageButton
             android:id="@+id/voice_bt"

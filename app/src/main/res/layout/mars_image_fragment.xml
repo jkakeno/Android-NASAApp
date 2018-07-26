@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <FrameLayout
+        android:id="@+id/imageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
+    <ImageView
+        android:id="@+id/marsImage"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:adjustViewBounds="true"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_above="@+id/share_bt"
+        android:layout_alignEnd="@+id/share_bt">
+
+        <ImageButton
+            android:id="@+id/edit_bt"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_edit"
+            android:background="@drawable/edit_button_selector"/>
+
+        <ImageButton
+            android:id="@+id/text_bt"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/text_button_selector"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/share_bt"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="SHARE"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

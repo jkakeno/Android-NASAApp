@@ -4,20 +4,24 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.example.nasapp.Model.Apod;
 import com.example.nasapp.Model.ApodAndEpic;
@@ -28,22 +32,27 @@ import com.example.nasapp.Model.Earth.ResultsItem;
 import com.example.nasapp.Model.Epic;
 import com.example.nasapp.Model.LibraryImage.LibraryImageCollection;
 import com.example.nasapp.Model.Rover;
+import com.example.nasapp.Model.RoverImage.PhotosItem;
 import com.example.nasapp.Model.RoverImage.RoverImages;
 import com.example.nasapp.Model.RoverList;
 import com.example.nasapp.Retrofit.ApiInterface;
 import com.example.nasapp.Retrofit.ApiUtils;
 import com.example.nasapp.UI.ApodFragment;
+import com.example.nasapp.UI.ContainerFragment;
 import com.example.nasapp.UI.CoverListFragment;
 import com.example.nasapp.UI.DelayedProgressDialog;
 import com.example.nasapp.UI.EarthImageFragment;
 import com.example.nasapp.UI.ImageListFragment;
 import com.example.nasapp.UI.ImageSearchFragment;
 import com.example.nasapp.UI.LocationPickFragment;
+import com.example.nasapp.UI.MarsImageSearchFragment;
 import com.example.nasapp.UI.RoverImageListFragment;
 import com.example.nasapp.UI.RoverImageSearchFragment;
-import com.example.nasapp.UI.RoverListFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +74,10 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     private static final String LOCATION_PICK_FRAGMENT = "location_pick_fragment";
     private static final String EARTH_IMAGE_FRAGMENT = "earth_picture_fragment";
     private static final String ROVER_LIST_FRAGMENT = "rover_list_fragment";
+    private static final String MARS_IMAGE_SEARCH_FRAGMENT = "mars_image_search_fragment";
     private static final String ROVER_IMAGE_SEARCH_FRAGMENT = "rover_image_search_fragment";
     private static final String ROVER_IMAGE_LIST_FRAGMENT = "rover_image_list_fragment";
+    private static final String MARS_IMAGE_FRAGMENT = "mars_image_fragment";
     private static final String IMAGE_SEARCH_FRAGMENT = "image_search_fragment";
     private static final String IMAGE_LIST_FRAGMENT = "image_list_fragment";
     private static final String PROGRESS_DIALOG = "progress_dialog";
@@ -81,9 +92,24 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     Rover roverSelected;
     Apod apod;
     LibraryImageCollection imageCollection;
+    DelayedProgressDialog progressDialog = new DelayedProgressDialog();
+
+    ApiInterface apodAPIInterface;
+    ApiInterface epicAPIInterface;
+    ApiInterface imageLibraryAPIInterface;
+    ApiInterface roverImagesAPIInterface;
+    ApiInterface assetsAPIInterface;
+    ApiInterface earthImageryAPIInterface;
+
+    Disposable disposableApodEpic;
+    Disposable disposableImageCollection;
+    Disposable disposableRoverImages;
+    Disposable disposableAssets;
+    Disposable disposableResults;
+    Disposable disposableEarthImage;
 
     ArrayList<Cover> coverList= new ArrayList<>();
-    ArrayList<Rover> roverList = new RoverList().getRoverList();
+    RoverList roverList = new RoverList();
     ArrayList<Epic> epicList= new ArrayList<>();
     ArrayList<Image> earthImages=new ArrayList<>();
 
@@ -123,35 +149,20 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         }
     };
 
-    ApiInterface apodAPIInterface;
-    ApiInterface epicAPIInterface;
-    ApiInterface imageLibraryAPIInterface;
-    ApiInterface roverImagesAPIInterface;
-    ApiInterface assetsAPIInterface;
-    ApiInterface earthImageryAPIInterface;
-
-    Disposable disposableApodEpic;
-    Disposable disposableImageCollection;
-    Disposable disposableRoverImages;
-    Disposable disposableAssets;
-    Disposable disposableResults;
-    Disposable disposableEarthImage;
-
     boolean gpsEnabled;
     boolean wantLocation;
-
-    DelayedProgressDialog progressDialog = new DelayedProgressDialog();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         Log.d(TAG,"onCreate");
-
-        /*NOTE: If there are issues with the lists field updating dynamically create them in onCreate().*/
+        setContentView(R.layout.activity_main);
 
         /*Display cover list fragment.*/
         fragmentManager = getSupportFragmentManager();
+
+        /*Get the location manager and request for location update.*/
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         /*Invoke api methods.*/
         apodAPIInterface = ApiUtils.getApodApiInterface();
@@ -203,8 +214,9 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG, "ApodEpic Observable onError()");
-                /*TODO: Add observable error dialog.*/
+                Log.d(TAG, "ApodEpic Observable onError()"+e.getMessage());
+                progressDialog.cancel();
+                showDialog("error",e.getMessage());
             }
 
             @Override
@@ -228,11 +240,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         searchCover = new Cover("SEARCH");
         searchCover.setImageTitle("NASA Image Library");
         searchCover.setImageResource(Uri.parse("android.resource://com.example.nasapp/" + R.drawable.cover_library));
-
-
-        // Get the location manager and request for location update
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
     }
 
     @Override
@@ -265,23 +272,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG,"onStart");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(TAG,"onStop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG,"onDestroy");
-    }
 
     @Override
     public void onCoverSelectInteraction(Cover cover) {
@@ -311,8 +301,10 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                 }
                 break;
             case "MARS":
-                RoverListFragment roverListFragment = RoverListFragment.newInstance(roverList);
-                fragmentManager.beginTransaction().replace(R.id.root, roverListFragment, ROVER_LIST_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
+//                RoverListFragment roverListFragment = RoverListFragment.newInstance(roverList);
+//                fragmentManager.beginTransaction().replace(R.id.root, roverListFragment, ROVER_LIST_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
+                MarsImageSearchFragment marsImageSearchFragment = MarsImageSearchFragment.newInstance(roverList);
+                fragmentManager.beginTransaction().replace(R.id.root, marsImageSearchFragment, MARS_IMAGE_SEARCH_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
                 break;
             case "SEARCH":
                 ImageSearchFragment imageSearchFragment = new ImageSearchFragment();
@@ -328,23 +320,25 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     }
 
     public void enableGPS() {
-            /*Create alert dialog to prompt the user to turn GPS (Location) ON.*/
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage("Please enable location on your phone to use this feature.");
-            alertDialogBuilder.setPositiveButton("SETTINGS", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
+        showDialog("gps","Please enable location on your phone to use this feature.");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    showDialog("permission","Location permission was granted...");
+
+                } else {
+                    // Permission Denied
+                    showDialog("permission","Location permission was denied...");
                 }
-            });
-            alertDialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                }
-            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
@@ -359,9 +353,8 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         final String lat = new DecimalFormat("##.######").format(currentLocation.latitude);
         final String lon = new DecimalFormat("###.######").format(currentLocation.longitude);
 
-        /*Get an Observable Asset.*/
-        Observable<Assets> assetsObservable = assetsAPIInterface.getAssets(lon,lat,begindate).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-        assetsObservable.subscribe(new Observer<Assets>() {
+        /*Get an Observable Asset. This api call returns an observable as defined in the ApiInterface.*/
+        assetsAPIInterface.getAssets(lon,lat,begindate).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Assets>() {
             @Override
             public void onSubscribe(Disposable d) {
                 Log.d(TAG, "Assets Observable onSubscribed()");
@@ -375,9 +368,10 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
 
                 /*Get the Result list from Assets.*/
                 List<ResultsItem> resultsItemList = assets.getResults();
-                if (resultsItemList != null) {
+
+                if (assets.getCount()!=0 && !resultsItemList.isEmpty()) {
                     /*Make the list of results an iterable observable. Similar function as for loop.*/
-                    /*Limit the number of emitted items to 10 to prevent errors (HTTP 429 Too Many Requests, Timeout).*/
+                    /*Limit the number of emitted items to 15 to prevent errors (HTTP 429 Too Many Requests, Timeout).*/
                     /*Cascade observables to get the image for each result date.*/
                     Observable
                             .fromIterable(resultsItemList)
@@ -420,45 +414,33 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                                 @Override
                                 public void onError(Throwable e) {
                                     Log.d(TAG,"Result error: " + e.getMessage());
-                                    /*TODO: Add observable error dialog.*/
+                                    progressDialog.cancel();
+                                    showDialog("error",e.getMessage());
                                 }
 
                                 @Override
                                 public void onComplete() {
                                     Log.d(TAG, "Results Observable onComplete()");
                                     Log.d(TAG,"Result items completed -> Number of Images: " + earthImages.size());
-
                                     progressDialog.cancel();
-
                                     Fragment locationPickFragment = fragmentManager.findFragmentByTag(LOCATION_PICK_FRAGMENT);
                                     int locationPickFragmentId = locationPickFragment.getId();
                                     EarthImageFragment earthImageFragment = EarthImageFragment.newInstance(earthImages);
+
                                     fragmentManager.beginTransaction().replace(locationPickFragmentId, earthImageFragment, EARTH_IMAGE_FRAGMENT).addToBackStack(LOCATION_PICK_FRAGMENT).commit();
                                 }
                             });
                 }else{
                     progressDialog.cancel();
-
-//                    Toast.makeText(MainActivity.this, "There aren't images available for the selected date or location. Please select another date or location.", Toast.LENGTH_LONG).show();
-
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                    alertDialogBuilder.setMessage("There aren't images available for the selected date or location. Please select another date or location.");
-                    alertDialogBuilder.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-
+                    showDialog("message","There aren't images available for the selected date or location. Please select another date or location.");
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "Assets Observable onError()"+e.getMessage());
-                /*TODO: Add observable error dialog.*/
+                progressDialog.cancel();
+                showDialog("error",e.getMessage());
             }
 
             @Override
@@ -484,7 +466,9 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
 
     @Override
     public void onGetRoverImageryInteraction(Rover rover) {
+
         this.roverSelected = rover;
+
         String name = rover.getRoverName();
         String url = null;
         switch (name){
@@ -500,120 +484,266 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         }
         String sol = rover.getSolSetting();
         String camera = rover.getCameraSetting();
-        Observable<RoverImages> roverImagesObservable = roverImagesAPIInterface.getRoverImages(url,sol,camera).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-        roverImagesObservable.subscribe(new Observer<RoverImages>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                Log.d(TAG, "RoverImages Observable onSubscribed()");
-                disposableRoverImages=d;
-                progressDialog.show(fragmentManager,PROGRESS_DIALOG);
-            }
 
-            @Override
-            public void onNext(RoverImages roverImages) {
-                Log.d(TAG, "RoverImages Observable onNext()");
-                roverSelected.setRoverImages(roverImages);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "RoverImages Observable onError()");
-                /*TODO: Add observable error dialog.*/
-            }
-
-            @Override
-            public void onComplete() {
-                Log.d(TAG, "RoverImages Observable onComplete()");
-                progressDialog.cancel();
-                RoverImageListFragment roverImageListFragment = RoverImageListFragment.newInstance(roverSelected);
-                fragmentManager.beginTransaction().replace(R.id.mars_image_list_container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).commit();
-            }
-        });
-    }
-
-    @Override
-    public void onSearchImageryInteraction(String keyword) {
-        if(keyword!=null) {
-        /*Get an observable library image collection object when calling image library api.*/
-            Observable<LibraryImageCollection> libraryImageCollectionObservable = imageLibraryAPIInterface.getImageCollectionFromLibrary(keyword).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-            libraryImageCollectionObservable.subscribe(new Observer<LibraryImageCollection>() {
+        if(camera=="All"){
+            /*Get an Observable Rover Images from all cameras. This api call returns an observable as defined in the ApiInterface.*/
+            roverImagesAPIInterface.getRoverAllImages(url, sol).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<RoverImages>() {
                 @Override
                 public void onSubscribe(Disposable d) {
-                    Log.d(TAG, "LibraryImageCollection Observable onSubscribed()");
-                    disposableImageCollection = d;
+                    Log.d(TAG, "RoverImages Observable onSubscribed()");
+                    disposableRoverImages = d;
                     progressDialog.show(fragmentManager, PROGRESS_DIALOG);
                 }
 
                 @Override
-                public void onNext(LibraryImageCollection libraryImageCollection) {
-                    Log.d(TAG, "LibraryImageCollection Observable onNext()");
-                    imageCollection = libraryImageCollection;
+                public void onNext(RoverImages roverImages) {
+                    Log.d(TAG, "RoverImages Observable onNext()");
+                    roverSelected.setRoverImages(roverImages);
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    Log.d(TAG, "LibraryImageCollection Observable onError()");
-                /*TODO: Add observable error dialog.*/
+                    Log.d(TAG, "RoverImages Observable onError()" + e.getMessage());
+                    progressDialog.cancel();
+                    showDialog("error", e.getMessage());
                 }
 
                 @Override
                 public void onComplete() {
-                    Log.d(TAG, "LibraryImageCollection Observable onComplete()");
+                    Log.d(TAG, "RoverImages Observable onComplete()");
                     progressDialog.cancel();
-                    ImageListFragment imageListFragment = ImageListFragment.newInstance(imageCollection);
-                    fragmentManager.beginTransaction().replace(R.id.image_list_container, imageListFragment, IMAGE_LIST_FRAGMENT).commit();
+                    if (!roverSelected.getRoverImages().getPhotos().isEmpty()) {
+                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
+                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
+                        RoverImageListFragment roverImageListFragment = RoverImageListFragment.newInstance(roverSelected);
+                        ContainerFragment containerFragment = new ContainerFragment();
+
+                        FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
+                        /*Replace container fragment with the last displayed fragment view. (Container has black background used so that previously displayed fragment doesn't shown during animation).*/
+                        fragmentTransaction.replace(R.id.mars_image_container,containerFragment,null);
+                        /*Replace container fragment with the fragment we want to see. Save last displayed fragment to backstack.*/
+                        /*NOTE that the R.id that the new fragment replaces must be the same as the R.id that MarsImageFragment replaces for animation to work.*/
+                        fragmentTransaction.replace(R.id.container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT);
+                        fragmentTransaction.commit();
+
+//                        fragmentManager.beginTransaction().replace(R.id.mars_image_container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT).commit();
+                    } else {
+                        showDialog("message", "Threre aren't images available for the selected sol or camera. Please select a different sol or camera.");
+                    }
+                }
+            });
+        }else {
+        /*Get an Observable Rover Images from a selected camera. This api call returns an observable as defined in the ApiInterface.*/
+            roverImagesAPIInterface.getRoverImages(url, sol, camera).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<RoverImages>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                    Log.d(TAG, "RoverImages Observable onSubscribed()");
+                    disposableRoverImages = d;
+                    progressDialog.show(fragmentManager, PROGRESS_DIALOG);
+                }
+
+                @Override
+                public void onNext(RoverImages roverImages) {
+                    Log.d(TAG, "RoverImages Observable onNext()");
+                    roverSelected.setRoverImages(roverImages);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.d(TAG, "RoverImages Observable onError()" + e.getMessage());
+                    progressDialog.cancel();
+                    showDialog("error", e.getMessage());
+                }
+
+                @Override
+                public void onComplete() {
+                    Log.d(TAG, "RoverImages Observable onComplete()");
+                    progressDialog.cancel();
+                    if (!roverSelected.getRoverImages().getPhotos().isEmpty()) {
+                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
+                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
+                        RoverImageListFragment roverImageListFragment = RoverImageListFragment.newInstance(roverSelected);
+                        ContainerFragment containerFragment = new ContainerFragment();
+
+                        FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
+                        /*Replace container fragment with the last displayed fragment view. (Container has black background used so that previously displayed fragment doesn't shown during animation).*/
+                        fragmentTransaction.replace(R.id.mars_image_container,containerFragment,null);
+                        /*Replace container fragment with the fragment we want to see. Save last displayed fragment to backstack.*/
+                        /*NOTE that the R.id that the new fragment replaces must be the same as the R.id that MarsImageFragment replaces for animation to work.*/
+                        fragmentTransaction.replace(R.id.container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT);
+                        fragmentTransaction.commit();
+
+//                        fragmentManager.beginTransaction().replace(R.id.mars_image_container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT).commit();
+                    } else {
+                        showDialog("message", "Threre aren't images available for the selected sol or camera. Please select a different sol or camera.");
+                    }
                 }
             });
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case REQUEST_CODE_ASK_PERMISSIONS:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission Granted
-//                    Toast.makeText(this,"FINE LOCATION permission granted!",Toast.LENGTH_LONG).show();
+    public void onMarsImageSelectInteraction(PhotosItem marsImage, ImageView imageView) {
+//        MarsImageFragment marsImageFragment = MarsImageFragment.newInstance(marsImage);
+//        Fragment roverListFragment = fragmentManager.findFragmentByTag(ROVER_LIST_FRAGMENT);
+//        int roverListFragmentId = roverListFragment.getId();
+//        /*TODO: Exit animation doesn't work. */
+//        /*TODO: Study android-ActivitySceneTransitionBasic-master project.*/
+//        /*If exit transation doesn't work use Glide animate() at it looks better.*/
+//        fragmentManager.beginTransaction().add(roverListFragmentId, marsImageFragment, MARS_IMAGE_FRAGMENT).addToBackStack(ROVER_LIST_FRAGMENT).commit();
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                    alertDialogBuilder.setMessage("Location permission was granted...");
-                    final AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+    }
 
-                    // Hide after some seconds
-                    final Handler handler  = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (alertDialog.isShowing()) {
-                                alertDialog.dismiss();
-                            }
-                        }
-                    },3000);
+    @Override
+    public void onMarsImageShareInteraction(Bitmap bitmap) {
 
-                } else {
-                    // Permission Denied
-//                    Toast.makeText(this,"FINE LOCATION permission denied!",Toast.LENGTH_LONG).show();
+        Uri bitmapUri=getLocalBitmapUri(bitmap);
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                    alertDialogBuilder.setMessage("Location permission was denied...");
-                    final AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
+        if (bitmapUri != null) {
+            /*Construct a ShareIntent with link to image*/
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+            shareIntent.setType("image/*");
+            /*Launch sharing dialog for image*/
+            startActivity(Intent.createChooser(shareIntent, "Share Image"));
+        } else {
+            showDialog("error","Could not share image...");
+        }
+    }
 
-                    // Hide after some seconds
-                    final Handler handler  = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (alertDialog.isShowing()) {
-                                alertDialog.dismiss();
-                            }
-                        }
-                    },3000);
+    private Uri getLocalBitmapUri(Bitmap bitmap) {
+
+        Uri bitmapUri = null;
+
+        try {
+            /*Create a file directory to put the image bitmap.*/
+            File file = File.createTempFile("share_image_",".png",this.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+
+            /*TODO: Delete the file once share intent sent completed to save storage space.*/
+            /*https://stackoverflow.com/questions/4609129/delete-file-after-sharing-via-intent*/
+            /*https://stackoverflow.com/questions/5486529/delete-file-from-internal-storage*/
+            /*https://www.tutorialspoint.com/java/io/file_createtempfile_directory.htm*/
+
+            Log.d(TAG,"File dir: "+file.getAbsolutePath());
+
+            /*Create an outputstream that writes bytes to the file directory.*/
+            FileOutputStream out = new FileOutputStream(file);
+            /*Write a compressed version of the bitmap to the specified outputstream. */
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            /*Close the outputstream.*/
+            out.close();
+
+            /*Get the bitmap file uri using the file provider class.*/
+            bitmapUri = FileProvider.getUriForFile(this, "com.example.nasapp.fileprovider", file);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return bitmapUri;
+    }
+
+
+    @Override
+    public void onSearchImageryInteraction(String keyword) {
+
+        /*Get an Observable Library Images. This api call returns an observable as defined in the ApiInterface.*/
+        imageLibraryAPIInterface.getImageCollectionFromLibrary(keyword).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<LibraryImageCollection>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.d(TAG, "LibraryImageCollection Observable onSubscribed()");
+                disposableImageCollection = d;
+                progressDialog.show(fragmentManager, PROGRESS_DIALOG);
+            }
+
+            @Override
+            public void onNext(LibraryImageCollection libraryImageCollection) {
+                Log.d(TAG, "LibraryImageCollection Observable onNext()");
+                imageCollection = libraryImageCollection;
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "LibraryImageCollection Observable onError()"+e.getMessage());
+                progressDialog.cancel();
+                showDialog("error",e.getMessage());
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(TAG, "LibraryImageCollection Observable onComplete()");
+                progressDialog.cancel();
+                if(!imageCollection.getCollection().getItems().isEmpty()) {
+                    ImageListFragment imageListFragment = ImageListFragment.newInstance(imageCollection);
+                    fragmentManager.beginTransaction().replace(R.id.image_list_container, imageListFragment, IMAGE_LIST_FRAGMENT).commit();
+                }else{
+                    showDialog("message","There aren't images available for this keyword. Please enter a different keyword.");
                 }
+            }
+        });
+    }
+
+    private void showDialog(String type, String message) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+
+        switch (type){
+            case "error":
+                alertDialogBuilder.setTitle("Error");
+                alertDialogBuilder.setMessage(message);
+                alertDialogBuilder.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                AlertDialog errorDialog = alertDialogBuilder.create();
+                errorDialog.show();
                 break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            case "gps":
+                alertDialogBuilder.setMessage(message);
+                alertDialogBuilder.setPositiveButton("SETTINGS", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        /*Direct user to gps location setting.*/
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+                alertDialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                AlertDialog gpsDialog = alertDialogBuilder.create();
+                gpsDialog.show();
+                break;
+            case "permission":
+                alertDialogBuilder.setMessage(message);
+                final AlertDialog permissionDialog = alertDialogBuilder.create();
+                permissionDialog.show();
+
+                // Hide after some seconds
+                final Handler handler  = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (permissionDialog.isShowing()) {
+                            permissionDialog.dismiss();
+                        }
+                    }
+                },3000);
+                break;
+            case "message":
+                alertDialogBuilder.setMessage(message);
+                alertDialogBuilder.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                AlertDialog messageDialog = alertDialogBuilder.create();
+                messageDialog.show();
+                break;
         }
     }
 }

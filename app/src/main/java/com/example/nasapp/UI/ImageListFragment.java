@@ -56,12 +56,12 @@ public class ImageListFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         no_image_tv = view.findViewById(R.id.no_image);
 
-        if(libraryImageCollection!=null) {
+        if(libraryImageCollection==null||libraryImageCollection.getCollection().getItems().size()==0) {
+            no_image_tv.setVisibility(View.VISIBLE);
+        }else{
             no_image_tv.setVisibility(View.GONE);
             adapter = new ImageListAdapter(getActivity(), libraryImageCollection, listener);
             viewPager.setAdapter(adapter);
-        }else{
-            no_image_tv.setVisibility(View.VISIBLE);
         }
 
         return view;

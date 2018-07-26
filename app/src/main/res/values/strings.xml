@@ -2,14 +2,14 @@
     <string name="app_name">NASApp</string>
 
     <!--Hints-->
-    <string name="date_hint">Enter a date...</string>
-    <string name="select_period_hint">Select a period</string>
-    <string name="select_camera_hint">Select a camera</string>
-    <string name="sol_hint">Enter a sol</string>
-    <string name="enter_key_word">Enter key word</string>
+    <string name="date_hint">Enter a start date...</string>
+    <string name="select_camera_hint">Select a camera...</string>
+    <string name="sol_hint">Enter a Martian sol...</string>
+    <string name="key_word_hint">Enter key word</string>
 
     <!--Labels-->
     <string name="get_images">GET IMAGES</string>
+    <string name="nasa_icon_title">NASA</string>
 
     <!--Message-->
     <string name="no_image">There are no images to display</string>

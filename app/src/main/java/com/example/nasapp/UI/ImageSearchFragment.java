@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -122,7 +123,11 @@ public class ImageSearchFragment extends Fragment {
         search_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSearchImageryInteraction(keyword);
+                if(!TextUtils.isEmpty(keyword)) {
+                    listener.onSearchImageryInteraction(keyword);
+                }else{
+                    searchBox_et.setError("Enter a keyword...");
+                }
             }
         });
 

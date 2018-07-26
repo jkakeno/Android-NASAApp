@@ -107,7 +107,6 @@ public class LocationPickFragment extends Fragment {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, day);
-//                String myFormat = "MM/dd/yyyy";
                 String myFormat = "yyyy-MM-dd";
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(myFormat, Locale.US);
                 String date = simpleDateFormat.format(calendar.getTime());

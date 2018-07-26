@@ -11,7 +11,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.nasapp.R;
@@ -37,9 +38,7 @@ import com.example.nasapp.R;
 public class DelayedProgressDialog extends DialogFragment {
     private static final int DELAY_MILLISECOND = 450;
     private static final int SHOW_MIN_MILLISECOND = 300;
-    private static final int PROGRESS_CONTENT_SIZE_DP = 80;
 
-//    private ProgressBar mProgressBar;
     private RelativeLayout mProgressBar;
     private boolean startedShowing;
     private long mStartMillisecond;
@@ -54,11 +53,15 @@ public class DelayedProgressDialog extends DialogFragment {
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        builder.setView(inflater.inflate(R.layout.dialog_progress, null));
-        return builder.create();
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_progress,null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        Dialog dialog =builder.setView(view).create();
+
+        /*Make the dialog none-clickable.*/
+        setCancelable(false);
+
+        return dialog;
     }
 
     @Override
@@ -67,8 +70,10 @@ public class DelayedProgressDialog extends DialogFragment {
         mProgressBar = getDialog().findViewById(R.id.progress);
 
         if (getDialog().getWindow() != null) {
-            int px = (int) (PROGRESS_CONTENT_SIZE_DP * getResources().getDisplayMetrics().density);
-            getDialog().getWindow().setLayout(px, px);
+            /*Set the dialog view properties.*/
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            getDialog().getWindow().setLayout(width, height);
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
     }

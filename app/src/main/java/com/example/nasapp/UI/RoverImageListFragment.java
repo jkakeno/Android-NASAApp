@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ public class RoverImageListFragment extends Fragment {
     View view;
     TextView no_image_tv;
     RecyclerView recyclerView;
+//    RoverImageListAdapter adapter;
     RoverImageListAdapter adapter;
     GridLayoutManager layoutManager;
 
@@ -61,10 +64,18 @@ public class RoverImageListFragment extends Fragment {
             no_image_tv.setVisibility(View.VISIBLE);
         }else {
             no_image_tv.setVisibility(View.GONE);
-            adapter = new RoverImageListAdapter(getActivity(), rover, listener);
+//            adapter = new RoverImageListAdapter(getActivity(), rover, listener);
+            adapter = new RoverImageListAdapter(getActivity(), rover, listener,this);
             layoutManager = new GridLayoutManager(getActivity(), 2);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(layoutManager);
+
+            /*Prepare transitions*/
+            Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.grid_exit_transition);
+            setExitTransition(transition);
+
+            /*Postpone enter transition of this fragment for when back is pressed from zoom fragment.*/
+            postponeEnterTransition();
         }
 
 

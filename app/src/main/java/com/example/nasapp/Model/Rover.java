@@ -15,12 +15,15 @@ public class Rover implements Parcelable{
     String solSetting;
     String cameraSetting;
     RoverImages roverImages;
+    boolean selected;
 
     public Rover(String roverName, Uri roverImageUri) {
         this.roverName = roverName;
         this.roverImageUri = roverImageUri;
     }
 
+    public Rover(){
+    }
 
     protected Rover(Parcel in) {
         roverName = in.readString();
@@ -58,20 +61,36 @@ public class Rover implements Parcelable{
         this.roverImageUri = roverImageUri;
     }
 
-    public ArrayList<String> getCameraList() {
+    public ArrayList<String> getCameraList(){
         cameraList = new ArrayList<>();
-        cameraList.add("Select a camera...");
-        cameraList.add("Front Hazard Avoidance Camera");
-        cameraList.add("Rear Hazard Avoidance Camera");
-        cameraList.add("Mast Camera");
-        cameraList.add("Chemistry and Camera Complex");
-        cameraList.add("Mars Hand Lens Imager");
-        cameraList.add("Mars Descent Imager");
-        cameraList.add("Navigation Camera");
-        cameraList.add("Panoramic Camera");
-        cameraList.add("Thermal Emmision Spectrometer");
+        cameraList.add("All");
+        cameraList.add("fhaz");
+        cameraList.add("rhaz");
+        cameraList.add("mast");
+        cameraList.add("chemcam");
+        cameraList.add("mahli");
+        cameraList.add("mardi");
+        cameraList.add("navcam");
+        cameraList.add("pancam");
+        cameraList.add("minites");
         return cameraList;
     }
+
+//    public ArrayList<String> getCameraList() {
+//        cameraList = new ArrayList<>();
+//        cameraList.add("Select a camera...");
+//        cameraList.add("All");
+//        cameraList.add("Front Hazard Avoidance Camera");
+//        cameraList.add("Rear Hazard Avoidance Camera");
+//        cameraList.add("Mast Camera");
+//        cameraList.add("Chemistry and Camera Complex");
+//        cameraList.add("Mars Hand Lens Imager");
+//        cameraList.add("Mars Descent Imager");
+//        cameraList.add("Navigation Camera");
+//        cameraList.add("Panoramic Camera");
+//        cameraList.add("Thermal Emmision Spectrometer");
+//        return cameraList;
+//    }
 
     public void setCameraList(ArrayList<String> cameraList) {
         this.cameraList = cameraList;
@@ -89,37 +108,41 @@ public class Rover implements Parcelable{
         return cameraSetting;
     }
 
-    public void setCameraSetting(String cameraSetting) {
-        switch (cameraSetting){
-            case "Front Hazard Avoidance Camera":
-                this.cameraSetting = "fhaz";
-                break;
-            case "Rear Hazard Avoidance Camera":
-                this.cameraSetting = "rhaz";
-                break;
-            case "Mast Camera":
-                this.cameraSetting = "mast";
-                break;
-            case "Chemistry and Camera Complex":
-                this.cameraSetting = "chemcam";
-                break;
-            case "Mars Hand Lens Imager":
-                this.cameraSetting = "mahli";
-                break;
-            case "Mars Descent Imager":
-                this.cameraSetting = "mardi";
-                break;
-            case "Navigation Camera":
-                this.cameraSetting="navcam";
-                break;
-            case "Panoramic Camera":
-                this.cameraSetting="pancam";
-                break;
-            case "Thermal Emmision Spectrometer":
-                this.cameraSetting="minites";
-                break;
-        }
+    public void setCameraSetting(String cameraSetting){
+        this.cameraSetting = cameraSetting;
     }
+
+//    public void setCameraSetting(String cameraSetting) {
+//        switch (cameraSetting){
+//            case "Front Hazard Avoidance Camera":
+//                this.cameraSetting = "fhaz";
+//                break;
+//            case "Rear Hazard Avoidance Camera":
+//                this.cameraSetting = "rhaz";
+//                break;
+//            case "Mast Camera":
+//                this.cameraSetting = "mast";
+//                break;
+//            case "Chemistry and Camera Complex":
+//                this.cameraSetting = "chemcam";
+//                break;
+//            case "Mars Hand Lens Imager":
+//                this.cameraSetting = "mahli";
+//                break;
+//            case "Mars Descent Imager":
+//                this.cameraSetting = "mardi";
+//                break;
+//            case "Navigation Camera":
+//                this.cameraSetting="navcam";
+//                break;
+//            case "Panoramic Camera":
+//                this.cameraSetting="pancam";
+//                break;
+//            case "Thermal Emmision Spectrometer":
+//                this.cameraSetting="minites";
+//                break;
+//        }
+//    }
 
     public RoverImages getRoverImages() {
         return roverImages;
@@ -127,6 +150,14 @@ public class Rover implements Parcelable{
 
     public void setRoverImages(RoverImages roverImages) {
         this.roverImages = roverImages;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override

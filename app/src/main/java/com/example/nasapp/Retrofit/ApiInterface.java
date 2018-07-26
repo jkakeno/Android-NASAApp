@@ -31,6 +31,9 @@ public interface ApiInterface {
     @GET
     Observable<RoverImages> getRoverImages(@Url String url, @Query("sol") String sol, @Query("camera") String camera);
 
+    @GET
+    Observable<RoverImages> getRoverAllImages(@Url String url, @Query("sol") String sol);
+
     @GET("/planetary/earth/assets?api_key=" + API_KEY)
     Observable<Assets> getAssets(@Query("lon") String longitude, @Query("lat") String latitude, @Query("begin")String begin_date);
 

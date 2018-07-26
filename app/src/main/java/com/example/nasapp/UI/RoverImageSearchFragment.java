@@ -92,7 +92,7 @@ public class RoverImageSearchFragment extends Fragment {
             }
         });
 
-       /*Create select period spinner*/
+       /*Create select camera spinner*/
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_camera_item, cameraList){
             @Override
             public boolean isEnabled(int position) {
@@ -116,7 +116,7 @@ public class RoverImageSearchFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 cameraSetting = (String) parent.getItemAtPosition(position);
-                rover.setCameraSetting(cameraSetting);
+//                rover.setCameraSetting(cameraSetting);
                 checkStartButtonVisibility();
             }
 
