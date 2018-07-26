@@ -121,20 +121,6 @@ public class Apod implements Parcelable{
 		return url;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"Apod{" + 
-			"date = '" + date + '\'' + 
-			",copyright = '" + copyright + '\'' + 
-			",media_type = '" + mediaType + '\'' + 
-			",hdurl = '" + hdurl + '\'' + 
-			",service_version = '" + serviceVersion + '\'' + 
-			",explanation = '" + explanation + '\'' + 
-			",title = '" + title + '\'' + 
-			",url = '" + url + '\'' + 
-			"}";
-		}
 
 	@Override
 	public int describeContents() {

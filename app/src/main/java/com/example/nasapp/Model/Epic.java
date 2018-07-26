@@ -37,13 +37,4 @@ public class Epic{
 
 		return "https://epic.gsfc.nasa.gov/archive/natural/" + year + "/" + month + "/" + day + "/png/" + this.image + ".png";
 	}
-
-	@Override
- 	public String toString(){
-		return 
-			"Epic{" + 
-			"date = '" + date + '\'' + 
-			",image = '" + image + '\'' + 
-			"}";
-		}
 }

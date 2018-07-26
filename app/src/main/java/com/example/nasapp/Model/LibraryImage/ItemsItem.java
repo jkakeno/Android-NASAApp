@@ -40,13 +40,4 @@ public class ItemsItem{
 		return href;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"ItemsItem{" + 
-			"data = '" + data + '\'' + 
-			",links = '" + links + '\'' + 
-			",href = '" + href + '\'' + 
-			"}";
-		}
 }

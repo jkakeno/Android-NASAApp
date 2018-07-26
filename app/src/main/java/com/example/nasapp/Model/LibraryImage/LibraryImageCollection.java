@@ -37,13 +37,6 @@ public class LibraryImageCollection implements Parcelable{
 		return collection;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"LibraryImageCollection{" + 
-			"collection = '" + collection + '\'' + 
-			"}";
-		}
 
 	@Override
 	public int describeContents() {

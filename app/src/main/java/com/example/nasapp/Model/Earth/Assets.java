@@ -29,12 +29,4 @@ public class Assets{
 		return results;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"Assets{" + 
-			"count = '" + count + '\'' + 
-			",results = '" + results + '\'' + 
-			"}";
-		}
 }

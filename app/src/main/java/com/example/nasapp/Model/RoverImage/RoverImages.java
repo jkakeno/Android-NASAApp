@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 //@Generated("com.robohorse.robopojogenerator")
-public class RoverImages{
+public class RoverImages {
 
 	@SerializedName("photos")
 	private List<PhotosItem> photos;
@@ -17,12 +17,4 @@ public class RoverImages{
 	public List<PhotosItem> getPhotos(){
 		return photos;
 	}
-
-	@Override
- 	public String toString(){
-		return 
-			"RoverImages{" + 
-			"photos = '" + photos + '\'' + 
-			"}";
-		}
 }

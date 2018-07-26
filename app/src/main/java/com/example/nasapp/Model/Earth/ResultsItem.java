@@ -38,12 +38,4 @@ public class ResultsItem{
 		this.image = image;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"ResultsItem{" + 
-			"date = '" + date + '\'' + 
-			",id = '" + id + '\'' + 
-			"}";
-		}
 }

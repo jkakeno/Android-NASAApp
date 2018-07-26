@@ -76,22 +76,6 @@ public class Rover implements Parcelable{
         return cameraList;
     }
 
-//    public ArrayList<String> getCameraList() {
-//        cameraList = new ArrayList<>();
-//        cameraList.add("Select a camera...");
-//        cameraList.add("All");
-//        cameraList.add("Front Hazard Avoidance Camera");
-//        cameraList.add("Rear Hazard Avoidance Camera");
-//        cameraList.add("Mast Camera");
-//        cameraList.add("Chemistry and Camera Complex");
-//        cameraList.add("Mars Hand Lens Imager");
-//        cameraList.add("Mars Descent Imager");
-//        cameraList.add("Navigation Camera");
-//        cameraList.add("Panoramic Camera");
-//        cameraList.add("Thermal Emmision Spectrometer");
-//        return cameraList;
-//    }
-
     public void setCameraList(ArrayList<String> cameraList) {
         this.cameraList = cameraList;
     }
@@ -111,38 +95,6 @@ public class Rover implements Parcelable{
     public void setCameraSetting(String cameraSetting){
         this.cameraSetting = cameraSetting;
     }
-
-//    public void setCameraSetting(String cameraSetting) {
-//        switch (cameraSetting){
-//            case "Front Hazard Avoidance Camera":
-//                this.cameraSetting = "fhaz";
-//                break;
-//            case "Rear Hazard Avoidance Camera":
-//                this.cameraSetting = "rhaz";
-//                break;
-//            case "Mast Camera":
-//                this.cameraSetting = "mast";
-//                break;
-//            case "Chemistry and Camera Complex":
-//                this.cameraSetting = "chemcam";
-//                break;
-//            case "Mars Hand Lens Imager":
-//                this.cameraSetting = "mahli";
-//                break;
-//            case "Mars Descent Imager":
-//                this.cameraSetting = "mardi";
-//                break;
-//            case "Navigation Camera":
-//                this.cameraSetting="navcam";
-//                break;
-//            case "Panoramic Camera":
-//                this.cameraSetting="pancam";
-//                break;
-//            case "Thermal Emmision Spectrometer":
-//                this.cameraSetting="minites";
-//                break;
-//        }
-//    }
 
     public RoverImages getRoverImages() {
         return roverImages;

@@ -19,13 +19,9 @@ public class Annotation {
         return text;
     }
 
-
-
     public int getTextLocationX() {
         return textLocationX;
     }
-
-
 
     public int getTextLocationY() {
         return textLocationY;

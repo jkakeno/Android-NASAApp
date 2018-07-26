@@ -16,15 +16,16 @@ import com.example.nasapp.R;
 /*Tutorial: https://www.learn2crack.com/2014/01/android-custom-gridview.html
 * Documentation: https://developer.android.com/guide/topics/ui/layout/gridview*/
 
-public class RoverAdapter extends BaseAdapter {
 
-    private static final String TAG = RoverAdapter.class.getSimpleName();
+public class RoverGridAdapter extends BaseAdapter {
+
+    private static final String TAG = RoverGridAdapter.class.getSimpleName();
     Context context;
     RoverList roverList;
     private static LayoutInflater inflater=null;
     public int selectedRover=-1;
 
-    public RoverAdapter(Context context, RoverList roverList) {
+    public RoverGridAdapter(Context context, RoverList roverList) {
         this.context = context;
         this.roverList=roverList;
     }
@@ -70,47 +71,4 @@ public class RoverAdapter extends BaseAdapter {
 
         return roverGrid;
     }
-
-    //    Context context;
-//    String [] roverName;
-//    int[] roverImageId;
-//    private static LayoutInflater inflater=null;
-//
-//    public RoverAdapter(Context context, String[] roverTitle, int[] roverImageId) {
-//        this.context = context;
-//        this.roverName =roverTitle;
-//        this.roverImageId=roverImageId;
-//    }
-//
-//    public int getCount() {
-//        return roverName.length;
-//    }
-//
-//    public Object getItem(int position) {
-//        return null;
-//    }
-//
-//    public long getItemId(int position) {
-//        return 0;
-//    }
-//
-//
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        View roverGrid;
-//        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//        if (convertView == null) {
-//            roverGrid=new View(context);
-//            roverGrid=inflater.inflate(R.layout.rover_grid, null);
-//            TextView roverName_tv = (TextView) roverGrid.findViewById(R.id.rover_name);
-//            ImageView roverImage_iv = (ImageView) roverGrid.findViewById(R.id.rover_image);
-//            roverName_tv.setText(roverName[position]);
-//            roverImage_iv.setImageResource(roverImageId[position]);
-//        } else {
-//            roverGrid = (View) convertView;
-//        }
-//
-//        return roverGrid;
-//    }
 }

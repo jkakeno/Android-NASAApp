@@ -17,26 +17,25 @@ import com.example.nasapp.InteractionListener;
 import com.example.nasapp.Model.Rover;
 import com.example.nasapp.R;
 
-public class RoverImageListFragment extends Fragment {
-    private static final String TAG = RoverImageListFragment.class.getSimpleName();
+public class MarsImageListFragment extends Fragment {
+    private static final String TAG = MarsImageListFragment.class.getSimpleName();
     private static final String ARG = "rover";
 
     View view;
     TextView no_image_tv;
     RecyclerView recyclerView;
-//    RoverImageListAdapter adapter;
-    RoverImageListAdapter adapter;
+    MarsImageListAdapter adapter;
     GridLayoutManager layoutManager;
 
     Rover rover;
     InteractionListener listener;
 
-    public RoverImageListFragment() {
+    public MarsImageListFragment() {
         // Required empty public constructor
     }
 
-    public static RoverImageListFragment newInstance(Rover rover) {
-        RoverImageListFragment fragment = new RoverImageListFragment();
+    public static MarsImageListFragment newInstance(Rover rover) {
+        MarsImageListFragment fragment = new MarsImageListFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG, rover);
         fragment.setArguments(args);
@@ -56,7 +55,7 @@ public class RoverImageListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
-        view = inflater.inflate(R.layout.rover_image_list_fragment, container, false);
+        view = inflater.inflate(R.layout.mars_image_list_fragment, container, false);
         recyclerView = view.findViewById(R.id.rover_image_list);
         no_image_tv = view.findViewById(R.id.no_image);
 
@@ -64,14 +63,13 @@ public class RoverImageListFragment extends Fragment {
             no_image_tv.setVisibility(View.VISIBLE);
         }else {
             no_image_tv.setVisibility(View.GONE);
-//            adapter = new RoverImageListAdapter(getActivity(), rover, listener);
-            adapter = new RoverImageListAdapter(getActivity(), rover, listener,this);
+            adapter = new MarsImageListAdapter(getActivity(), rover, listener,this);
             layoutManager = new GridLayoutManager(getActivity(), 2);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(layoutManager);
 
             /*Prepare transitions*/
-            Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.grid_exit_transition);
+            Transition transition = TransitionInflater.from(getContext()).inflateTransition(R.transition.mars_image_item_exit_transition);
             setExitTransition(transition);
 
             /*Postpone enter transition of this fragment for when back is pressed from zoom fragment.*/

@@ -29,12 +29,4 @@ public class Collection{
 		return items;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"Collection{" + 
-			"metadata = '" + metadata + '\'' + 
-			",items = '" + items + '\'' + 
-			"}";
-		}
 }

@@ -38,13 +38,4 @@ public class LinksItem{
 		return render;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"LinksItem{" + 
-			"rel = '" + rel + '\'' + 
-			",href = '" + href + '\'' + 
-			",render = '" + render + '\'' + 
-			"}";
-		}
 }

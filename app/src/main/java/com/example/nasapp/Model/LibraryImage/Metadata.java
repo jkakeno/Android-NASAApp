@@ -16,11 +16,4 @@ public class Metadata{
 		return totalHits;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"Metadata{" + 
-			"total_hits = '" + totalHits + '\'' + 
-			"}";
-		}
 }

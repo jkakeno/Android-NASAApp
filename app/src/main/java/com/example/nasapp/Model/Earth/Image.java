@@ -59,15 +59,6 @@ public class Image implements Parcelable{
 		return url;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"Image{" + 
-			"date = '" + date + '\'' + 
-			",cloud_score = '" + cloudScore + '\'' + 
-			",url = '" + url + '\'' + 
-			"}";
-		}
 
 	@Override
 	public int describeContents() {

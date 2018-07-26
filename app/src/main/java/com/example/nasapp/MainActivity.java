@@ -21,7 +21,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.example.nasapp.Model.Apod;
 import com.example.nasapp.Model.ApodAndEpic;
@@ -32,7 +31,6 @@ import com.example.nasapp.Model.Earth.ResultsItem;
 import com.example.nasapp.Model.Epic;
 import com.example.nasapp.Model.LibraryImage.LibraryImageCollection;
 import com.example.nasapp.Model.Rover;
-import com.example.nasapp.Model.RoverImage.PhotosItem;
 import com.example.nasapp.Model.RoverImage.RoverImages;
 import com.example.nasapp.Model.RoverList;
 import com.example.nasapp.Retrofit.ApiInterface;
@@ -46,8 +44,7 @@ import com.example.nasapp.UI.ImageListFragment;
 import com.example.nasapp.UI.ImageSearchFragment;
 import com.example.nasapp.UI.LocationPickFragment;
 import com.example.nasapp.UI.MarsImageSearchFragment;
-import com.example.nasapp.UI.RoverImageListFragment;
-import com.example.nasapp.UI.RoverImageSearchFragment;
+import com.example.nasapp.UI.MarsImageListFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
@@ -73,10 +70,8 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     private static final String APOD_FRAGMENT = "apod_fragment";
     private static final String LOCATION_PICK_FRAGMENT = "location_pick_fragment";
     private static final String EARTH_IMAGE_FRAGMENT = "earth_picture_fragment";
-    private static final String ROVER_LIST_FRAGMENT = "rover_list_fragment";
     private static final String MARS_IMAGE_SEARCH_FRAGMENT = "mars_image_search_fragment";
-    private static final String ROVER_IMAGE_SEARCH_FRAGMENT = "rover_image_search_fragment";
-    private static final String ROVER_IMAGE_LIST_FRAGMENT = "rover_image_list_fragment";
+    private static final String MARS_IMAGE_LIST_FRAGMENT = "mars_image_list_fragment";
     private static final String MARS_IMAGE_FRAGMENT = "mars_image_fragment";
     private static final String IMAGE_SEARCH_FRAGMENT = "image_search_fragment";
     private static final String IMAGE_LIST_FRAGMENT = "image_list_fragment";
@@ -301,8 +296,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                 }
                 break;
             case "MARS":
-//                RoverListFragment roverListFragment = RoverListFragment.newInstance(roverList);
-//                fragmentManager.beginTransaction().replace(R.id.root, roverListFragment, ROVER_LIST_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
                 MarsImageSearchFragment marsImageSearchFragment = MarsImageSearchFragment.newInstance(roverList);
                 fragmentManager.beginTransaction().replace(R.id.root, marsImageSearchFragment, MARS_IMAGE_SEARCH_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
                 break;
@@ -451,20 +444,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     }
 
     @Override
-    public void onRoverSelectInteraction(Rover rover) {
-        /*Replace rover image search fragment with rover list fragment and add rover list fragment to the back stack so that rover list fragment's onCreateView is called when back button is pushed and animation is played.*/
-        RoverImageSearchFragment roverImageSearchFragment = RoverImageSearchFragment.newInstance(rover);
-        RoverImageListFragment roverImageListFragment =new RoverImageListFragment();
-        Fragment roverListFragment = fragmentManager.findFragmentByTag(ROVER_LIST_FRAGMENT);
-        int roverListFragmentId = roverListFragment.getId();
-
-        FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
-        fragmentTransaction.replace(roverListFragmentId, roverImageSearchFragment, ROVER_IMAGE_SEARCH_FRAGMENT).addToBackStack(ROVER_LIST_FRAGMENT);
-        fragmentTransaction.add(R.id.mars_image_list_container,roverImageListFragment,ROVER_IMAGE_LIST_FRAGMENT);
-        fragmentTransaction.commit();
-    }
-
-    @Override
     public void onGetRoverImageryInteraction(Rover rover) {
 
         this.roverSelected = rover;
@@ -513,9 +492,9 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                     Log.d(TAG, "RoverImages Observable onComplete()");
                     progressDialog.cancel();
                     if (!roverSelected.getRoverImages().getPhotos().isEmpty()) {
-                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
-                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
-                        RoverImageListFragment roverImageListFragment = RoverImageListFragment.newInstance(roverSelected);
+//                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
+//                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
+                        MarsImageListFragment marsImageListFragment = MarsImageListFragment.newInstance(roverSelected);
                         ContainerFragment containerFragment = new ContainerFragment();
 
                         FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
@@ -523,10 +502,8 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                         fragmentTransaction.replace(R.id.mars_image_container,containerFragment,null);
                         /*Replace container fragment with the fragment we want to see. Save last displayed fragment to backstack.*/
                         /*NOTE that the R.id that the new fragment replaces must be the same as the R.id that MarsImageFragment replaces for animation to work.*/
-                        fragmentTransaction.replace(R.id.container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT);
+                        fragmentTransaction.replace(R.id.container, marsImageListFragment, MARS_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT);
                         fragmentTransaction.commit();
-
-//                        fragmentManager.beginTransaction().replace(R.id.mars_image_container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT).commit();
                     } else {
                         showDialog("message", "Threre aren't images available for the selected sol or camera. Please select a different sol or camera.");
                     }
@@ -560,9 +537,9 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                     Log.d(TAG, "RoverImages Observable onComplete()");
                     progressDialog.cancel();
                     if (!roverSelected.getRoverImages().getPhotos().isEmpty()) {
-                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
-                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
-                        RoverImageListFragment roverImageListFragment = RoverImageListFragment.newInstance(roverSelected);
+//                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
+//                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
+                        MarsImageListFragment marsImageListFragment = MarsImageListFragment.newInstance(roverSelected);
                         ContainerFragment containerFragment = new ContainerFragment();
 
                         FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
@@ -570,28 +547,14 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                         fragmentTransaction.replace(R.id.mars_image_container,containerFragment,null);
                         /*Replace container fragment with the fragment we want to see. Save last displayed fragment to backstack.*/
                         /*NOTE that the R.id that the new fragment replaces must be the same as the R.id that MarsImageFragment replaces for animation to work.*/
-                        fragmentTransaction.replace(R.id.container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT);
+                        fragmentTransaction.replace(R.id.container, marsImageListFragment, MARS_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT);
                         fragmentTransaction.commit();
-
-//                        fragmentManager.beginTransaction().replace(R.id.mars_image_container, roverImageListFragment, ROVER_IMAGE_LIST_FRAGMENT).addToBackStack(MARS_IMAGE_SEARCH_FRAGMENT).commit();
                     } else {
                         showDialog("message", "Threre aren't images available for the selected sol or camera. Please select a different sol or camera.");
                     }
                 }
             });
         }
-    }
-
-    @Override
-    public void onMarsImageSelectInteraction(PhotosItem marsImage, ImageView imageView) {
-//        MarsImageFragment marsImageFragment = MarsImageFragment.newInstance(marsImage);
-//        Fragment roverListFragment = fragmentManager.findFragmentByTag(ROVER_LIST_FRAGMENT);
-//        int roverListFragmentId = roverListFragment.getId();
-//        /*TODO: Exit animation doesn't work. */
-//        /*TODO: Study android-ActivitySceneTransitionBasic-master project.*/
-//        /*If exit transation doesn't work use Glide animate() at it looks better.*/
-//        fragmentManager.beginTransaction().add(roverListFragmentId, marsImageFragment, MARS_IMAGE_FRAGMENT).addToBackStack(ROVER_LIST_FRAGMENT).commit();
-
     }
 
     @Override

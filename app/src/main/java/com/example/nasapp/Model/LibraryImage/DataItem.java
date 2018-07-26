@@ -84,17 +84,4 @@ public class DataItem{
 		return description508;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"DataItem{" + 
-			"keywords = '" + keywords + '\'' + 
-			",media_type = '" + mediaType + '\'' + 
-			",date_created = '" + dateCreated + '\'' + 
-			",center = '" + center + '\'' + 
-			",title = '" + title + '\'' + 
-			",nasa_id = '" + nasaId + '\'' + 
-			",description_508 = '" + description508 + '\'' + 
-			"}";
-		}
 }

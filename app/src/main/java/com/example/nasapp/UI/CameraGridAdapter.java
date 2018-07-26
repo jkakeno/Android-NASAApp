@@ -11,20 +11,16 @@ import android.widget.TextView;
 import com.example.nasapp.Model.RoverList;
 import com.example.nasapp.R;
 
-import java.util.ArrayList;
-
 /*Tutorial: https://www.androidtutorialpoint.com/material-design/android-custom-gridview-example-image-text/amp/
 * Documentation: https://developer.android.com/guide/topics/ui/layout/gridview*/
 
-public class CameraAdapter extends BaseAdapter {
+public class CameraGridAdapter extends BaseAdapter {
     Context context;
     RoverList roverList;
-//    String [] roverName;
-    ArrayList<String> cameraList;
     private static LayoutInflater inflater=null;
     public int selectedCamera=-1;
 
-    public CameraAdapter(Context context, RoverList roverList) {
+    public CameraGridAdapter(Context context, RoverList roverList) {
         this.context = context;
         this.roverList=roverList;
     }
