@@ -33,7 +33,7 @@ public class MarsImageListAdapter extends RecyclerView.Adapter<MarsImageListAdap
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rover_image_item, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mars_image_item, parent,false);
                         /*Display cover list fragment.*/
         return new ViewHolder(view);
     }
@@ -87,7 +87,7 @@ public class MarsImageListAdapter extends RecyclerView.Adapter<MarsImageListAdap
 
         public ViewHolder(View itemView) {
             super(itemView);
-            image=itemView.findViewById(R.id.marsImage);
+            image=itemView.findViewById(R.id.mars_image);
             date=itemView.findViewById(R.id.earthDate);
         }
     }

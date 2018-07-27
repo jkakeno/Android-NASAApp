@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     private static final String EARTH_IMAGE_FRAGMENT = "earth_picture_fragment";
     private static final String MARS_IMAGE_SEARCH_FRAGMENT = "mars_image_search_fragment";
     private static final String MARS_IMAGE_LIST_FRAGMENT = "mars_image_list_fragment";
-    private static final String MARS_IMAGE_FRAGMENT = "mars_image_fragment";
     private static final String IMAGE_SEARCH_FRAGMENT = "image_search_fragment";
     private static final String IMAGE_LIST_FRAGMENT = "image_list_fragment";
     private static final String PROGRESS_DIALOG = "progress_dialog";
@@ -492,8 +491,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                     Log.d(TAG, "RoverImages Observable onComplete()");
                     progressDialog.cancel();
                     if (!roverSelected.getRoverImages().getPhotos().isEmpty()) {
-//                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
-//                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
                         MarsImageListFragment marsImageListFragment = MarsImageListFragment.newInstance(roverSelected);
                         ContainerFragment containerFragment = new ContainerFragment();
 
@@ -537,8 +534,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                     Log.d(TAG, "RoverImages Observable onComplete()");
                     progressDialog.cancel();
                     if (!roverSelected.getRoverImages().getPhotos().isEmpty()) {
-//                        Fragment marsImageSearchFragment = fragmentManager.findFragmentByTag(MARS_IMAGE_SEARCH_FRAGMENT);
-//                        int marsImageSearchFragmentId = marsImageSearchFragment.getId();
                         MarsImageListFragment marsImageListFragment = MarsImageListFragment.newInstance(roverSelected);
                         ContainerFragment containerFragment = new ContainerFragment();
 
@@ -582,11 +577,6 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         try {
             /*Create a file directory to put the image bitmap.*/
             File file = File.createTempFile("share_image_",".png",this.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-
-            /*TODO: Delete the file once share intent sent completed to save storage space.*/
-            /*https://stackoverflow.com/questions/4609129/delete-file-after-sharing-via-intent*/
-            /*https://stackoverflow.com/questions/5486529/delete-file-from-internal-storage*/
-            /*https://www.tutorialspoint.com/java/io/file_createtempfile_directory.htm*/
 
             Log.d(TAG,"File dir: "+file.getAbsolutePath());
 

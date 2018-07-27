@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nasapp.InteractionListener;
 import com.example.nasapp.Model.Rover;
@@ -75,17 +74,15 @@ public class MarsImageSearchFragment extends Fragment {
         cameraGrid=view.findViewById(R.id.camera_grid);
         cameraGrid.setAdapter(cameraGridAdapter);
 
-        sol_et = view.findViewById(R.id.sol_setting_select);
+        sol_et = view.findViewById(R.id.sol_selected);
 
         getMarsImage_bt = view.findViewById(R.id.get_mars_images);
         getMarsImage_bt.setVisibility(View.GONE);
 
-        /*Persist selected item state.*/
-        /*https://stackoverflow.com/questions/11326089/android-gridview-keep-item-selected*/
-
         roverGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                /*Pass the position to the adapter to persist the state of the selected item.*/
                 roverGridAdapter.selectedRover =position;
                 roverGridAdapter.notifyDataSetChanged();
 
@@ -93,13 +90,13 @@ public class MarsImageSearchFragment extends Fragment {
                 rover.setRoverName(roverName);
 
                 checkStartButtonVisibility();
-                Toast.makeText(getActivity(), "You Clicked at " + roverName, Toast.LENGTH_SHORT).show();
             }
         });
 
         cameraGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                /*Pass the position to the adapter to persist the state of the selected item.*/
                 cameraGridAdapter.selectedCamera =position;
                 cameraGridAdapter.notifyDataSetChanged();
 
@@ -107,7 +104,6 @@ public class MarsImageSearchFragment extends Fragment {
                 rover.setCameraSetting(camera);
 
                 checkStartButtonVisibility();
-                Toast.makeText(getActivity(), "You Clicked at " + camera, Toast.LENGTH_SHORT).show();
             }
         });
 

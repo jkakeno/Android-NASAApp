@@ -10,10 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="400dp">
         <ImageView
-            android:id="@+id/marsImage"
+            android:id="@+id/mars_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"/>
+        <RelativeLayout
+            android:id="@+id/textContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <RelativeLayout
+            android:id="@+id/lineContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
@@ -29,7 +37,7 @@
                     android:text="Rover: "
                     android:textColor="@color/green"/>
                 <TextView
-                    android:id="@+id/roverName"
+                    android:id="@+id/rover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Curiosity"
@@ -45,7 +53,7 @@
                     android:text="Camera: "
                     android:textColor="@color/green"/>
                 <TextView
-                    android:id="@+id/cameraName"
+                    android:id="@+id/camera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="NAVCM"
@@ -61,7 +69,7 @@
                     android:text="Sol taken: "
                     android:textColor="@color/green"/>
                 <TextView
-                    android:id="@+id/martianSol"
+                    android:id="@+id/martian"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="10"
@@ -70,34 +78,33 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <LinearLayout
+    <RadioGroup
         android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_above="@+id/share_bt"
-        android:layout_alignEnd="@+id/share_bt">
-
-        <ImageButton
-            android:id="@+id/edit_bt"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/ic_edit"
-            android:background="@drawable/edit_button_selector"/>
-
-        <ImageButton
-            android:id="@+id/text_bt"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageContainer"
+        android:layout_centerInParent="true">
+        <RadioButton
+            android:id="@+id/add_line"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:button="@null"
+            android:background="@drawable/draw_button_selector"/>
+        <RadioButton
+            android:id="@+id/add_text"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:button="@null"
             android:background="@drawable/text_button_selector"/>
-    </LinearLayout>
+    </RadioGroup>
 
     <Button
-        android:id="@+id/share_bt"
+        android:id="@+id/share_image"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="SHARE"
+        android:text="@string/share_image"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

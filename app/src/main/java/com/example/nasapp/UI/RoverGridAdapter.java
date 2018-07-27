@@ -13,9 +13,6 @@ import com.example.nasapp.Model.Rover;
 import com.example.nasapp.Model.RoverList;
 import com.example.nasapp.R;
 
-/*Tutorial: https://www.learn2crack.com/2014/01/android-custom-gridview.html
-* Documentation: https://developer.android.com/guide/topics/ui/layout/gridview*/
-
 
 public class RoverGridAdapter extends BaseAdapter {
 

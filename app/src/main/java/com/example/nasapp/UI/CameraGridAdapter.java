@@ -11,9 +11,6 @@ import android.widget.TextView;
 import com.example.nasapp.Model.RoverList;
 import com.example.nasapp.R;
 
-/*Tutorial: https://www.androidtutorialpoint.com/material-design/android-custom-gridview-example-image-text/amp/
-* Documentation: https://developer.android.com/guide/topics/ui/layout/gridview*/
-
 public class CameraGridAdapter extends BaseAdapter {
     Context context;
     RoverList roverList;

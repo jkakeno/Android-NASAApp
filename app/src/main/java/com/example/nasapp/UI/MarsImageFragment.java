@@ -19,13 +19,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -43,9 +43,10 @@ public class MarsImageFragment extends Fragment {
 
     View view;
     ImageView marsImage_iv;
-    RelativeLayout imageContainer;
-    ImageButton edit_ib;
-    ImageButton text_ib;
+    RelativeLayout textContainer;
+    RelativeLayout lineContainer;
+    RadioButton add_line_rb;
+    RadioButton add_text_rb;
     Button share_bt;
     TextView rover_tv;
     TextView camera_tv;
@@ -60,7 +61,6 @@ public class MarsImageFragment extends Fragment {
     String rover;
     String camera;
     String sol;
-
 
     public MarsImageFragment() {
         // Required empty public constructor
@@ -89,14 +89,16 @@ public class MarsImageFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
         view = inflater.inflate(R.layout.mars_image_fragment, container, false);
-        marsImage_iv = view.findViewById(R.id.marsImage);
-        imageContainer = view.findViewById(R.id.imageContainer);
-        edit_ib = view.findViewById(R.id.edit_bt);
-        text_ib=view.findViewById(R.id.text_bt);
-        share_bt=view.findViewById(R.id.share_bt);
-        rover_tv=view.findViewById(R.id.roverName);
-        camera_tv=view.findViewById(R.id.cameraName);
-        sol_tv=view.findViewById(R.id.martianSol);
+        marsImage_iv = view.findViewById(R.id.mars_image);
+        textContainer = view.findViewById(R.id.textContainer);
+        lineContainer = view.findViewById(R.id.lineContainer);
+        add_line_rb = view.findViewById(R.id.add_line);
+        add_text_rb =view.findViewById(R.id.add_text);
+        share_bt=view.findViewById(R.id.share_image);
+        rover_tv=view.findViewById(R.id.rover);
+        camera_tv=view.findViewById(R.id.camera);
+        sol_tv=view.findViewById(R.id.martian);
+
 
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -121,26 +123,57 @@ public class MarsImageFragment extends Fragment {
         rover=marsImage.getRover().getName();
         camera=marsImage.getCamera().getFullName();
         sol=String.valueOf(marsImage.getSol());
-
         rover_tv.setText(rover);
         camera_tv.setText(camera);
         sol_tv.setText(sol);
 
-        /*TODO: Add free drawing on the image.*/
-        /*TODO: Add rover info on image.*/
-
-
-        text_ib.setOnClickListener(new View.OnClickListener() {
+        add_text_rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(),"Enter text...",Toast.LENGTH_SHORT).show();
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Log.d(TAG,"Edit Text button: "+isChecked);
+                if(isChecked) {
+                    compoundButton.setBackgroundResource(R.drawable.ic_text_selected);
+                    /*Get the touch coordinates of the text container*/
+                    textContainer.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if (motionEvent.getAction()==MotionEvent.ACTION_UP) {
+                                /*Get the x and y coordinates where user touched on image view*/
+                                int touchX = (int) motionEvent.getX();
+                                int touchY = (int) motionEvent.getY();
+
+                                addEditTextOverImage(touchX, touchY, ContextCompat.getColor(getActivity(),R.color.red));
+
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }
+                    });
+                }else{
+                    /*When the add text button is not pressed set the text button background to normal and bring the line container to the fore ground so user can add line.*/
+                    compoundButton.setBackgroundResource(R.drawable.ic_text);
+                    lineContainer.bringToFront();
+                }
             }
         });
 
-        edit_ib.setOnClickListener(new View.OnClickListener() {
+        add_line_rb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(),"Make drawing...",Toast.LENGTH_SHORT).show();
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Log.d(TAG,"Edit Drawing button: "+isChecked);
+                if(isChecked){
+                    compoundButton.setBackgroundResource(R.drawable.ic_edit_selected);
+                    /*Create an instance of the SketchSheetView class. This is the view where the lines will be placed.*/
+                    /*NOTE: bitmapStore is stored in this fragment so any line drawn will be registered in the bitmapStored.*/
+                    View lineView = new SketchSheetView(getActivity(),bitmapStored);
+                    /*Add the line view to the line container.*/
+                    lineContainer.addView(lineView);
+                }else{
+                    /*When the add line button is not pressed set the line button background to normal and bring the text container to the fore ground so user can add text.*/
+                    compoundButton.setBackgroundResource(R.drawable.ic_edit);
+                    textContainer.bringToFront();
+                }
             }
         });
 
@@ -161,27 +194,12 @@ public class MarsImageFragment extends Fragment {
                     }
                 });
 
-        /*Get the touch coordinates of the image view*/
-        marsImage_iv.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction()==MotionEvent.ACTION_UP) {
-                    /*Get the x and y coordinates where user touched on image view*/
-                    int touchX = (int) motionEvent.getX();
-                    int touchY = (int) motionEvent.getY();
 
-                    addEditTextOverImage(touchX, touchY, ContextCompat.getColor(getActivity(),R.color.red));
-
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        });
 
         share_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*Pass the stored bitmap so the bitmap can be flatten with text and image info.*/
                 Bitmap editedBitmap = flattenImage(bitmapStored,annotationList);
                 listener.onMarsImageShareInteraction(editedBitmap);
 
@@ -202,7 +220,7 @@ public class MarsImageFragment extends Fragment {
         layoutParams.setMargins(x, y, 0, 0);
         editText.setLayoutParams(layoutParams);
         /*Add edit text to container*/
-        imageContainer.addView(editText);
+        textContainer.addView(editText);
         /*Display the keyboard*/
         if(imm != null){
             imm.toggleSoftInput(0, InputMethodManager.SHOW_IMPLICIT);
@@ -253,7 +271,7 @@ public class MarsImageFragment extends Fragment {
             Rect annonationBounds = new Rect();
             /*Set the paint color and text size*/
             paint.setColor(annotation.getColor());
-            paint.setTextSize(12 * scale);
+            paint.setTextSize(15 * scale);
             /*Place the text in the box*/
             paint.getTextBounds(text, 0, text.length(), annonationBounds);
             /*Place the text rectangle with the text on the canvas at location touchX and touchY*/

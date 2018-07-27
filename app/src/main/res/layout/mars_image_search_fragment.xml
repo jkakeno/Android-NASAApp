@@ -1,85 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/mars_image_container"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mars_image_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout
-
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="3">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_margin="10dp"
-            android:text="ROVER"/>
-        <GridView
-            android:id="@+id/rover_grid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnWidth="100dp"
-            android:stretchMode="columnWidth"
-            android:numColumns="3"
-            android:verticalSpacing="10dp"
-            android:horizontalSpacing="10dp"
-            android:gravity="center"
-            android:padding="5dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="6">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_margin="10dp"
-            android:text="CAMERA"/>
-        <GridView
-            android:id="@+id/camera_grid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnWidth="90dp"
-            android:numColumns="2"
-            android:verticalSpacing="10dp"
-            android:horizontalSpacing="10dp"
-            android:gravity="center"/>
-    </LinearLayout>
-
-
-    <EditText
-        android:id="@+id/sol_setting_select"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:layout_marginTop="5dp"
-        android:focusable="true"
-        android:hint="@string/sol_hint"
-        android:background="@color/white"
-        android:textColorHint="@color/light_gray"
-        android:inputType="number"
-        android:textStyle="italic"
-        android:fontFamily="sans-serif"
-        android:textSize="20sp"
-        android:textColor="@color/light_gray"/>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="3">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_margin="10dp"
+                android:text="@string/rover_grid_title"/>
+            <GridView
+                android:id="@+id/rover_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnWidth="100dp"
+                android:stretchMode="columnWidth"
+                android:numColumns="3"
+                android:verticalSpacing="10dp"
+                android:horizontalSpacing="10dp"
+                android:gravity="center"
+                android:padding="5dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="6">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_margin="10dp"
+                android:text="@string/camera_grid_title"/>
+            <GridView
+                android:id="@+id/camera_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnWidth="90dp"
+                android:numColumns="2"
+                android:verticalSpacing="10dp"
+                android:horizontalSpacing="10dp"
+                android:gravity="center"/>
+        </LinearLayout>
 
 
-    <Button
-        android:id="@+id/get_mars_images"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="@string/get_images"/>
-</LinearLayout>
+        <EditText
+            android:id="@+id/sol_selected"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_marginTop="5dp"
+            android:focusable="true"
+            android:hint="@string/sol_hint"
+            android:background="@color/white"
+            android:textColorHint="@color/light_gray"
+            android:inputType="number"
+            android:textStyle="italic"
+            android:fontFamily="sans-serif"
+            android:textSize="20sp"
+            android:textColor="@color/light_gray"/>
+
+
+        <Button
+            android:id="@+id/get_mars_images"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/get_images"/>
+    </LinearLayout>
 </RelativeLayout>

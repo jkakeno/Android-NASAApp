@@ -7,10 +7,8 @@
     android:layout_margin="5dp"
     android:background="@color/colorPrimary">
 
-
-    <!--TODO: Space image view so 2 columns fit evenly on any devise.-->
     <ImageView
-        android:id="@+id/marsImage"
+        android:id="@+id/mars_image"
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:adjustViewBounds="true"
@@ -22,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="2018-07-04"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:gravity="center"/>
 
 </LinearLayout>
