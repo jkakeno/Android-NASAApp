@@ -230,11 +230,11 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         /*Set up the covers with static content.*/
         marsCover = new Cover("MARS");
         marsCover.setImageTitle("Rover Photos");
-        marsCover.setImageResource(Uri.parse("android.resource://com.example.nasapp/" + R.drawable.cover_mars));
+        marsCover.setImageResource(Uri.parse("android.resource://com.jkdevelopment.astronomy/" + R.drawable.cover_mars));
 
         searchCover = new Cover("SEARCH");
         searchCover.setImageTitle("NASA Image Library");
-        searchCover.setImageResource(Uri.parse("android.resource://com.example.nasapp/" + R.drawable.cover_library));
+        searchCover.setImageResource(Uri.parse("android.resource://com.jkdevelopment.astronomy/" + R.drawable.cover_library));
     }
 
     @Override

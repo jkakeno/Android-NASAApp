@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NASA</string>
+    <string name="app_name">AstroPics</string>
 
     <!--Hints-->
     <string name="date_hint">Enter a start date...</string>
