@@ -9,7 +9,6 @@
 
     <!--Labels-->
     <string name="get_images">GET IMAGES</string>
-    <string name="nasa_icon_title">NASA</string>
     <string name="rover_grid_title">ROVER</string>
     <string name="camera_grid_title">CAMERA</string>
     <string name="share_image">SHARE</string>
