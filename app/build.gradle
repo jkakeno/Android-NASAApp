@@ -10,10 +10,16 @@ android {
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    //Install homebrew and adb https://stackoverflow.com/questions/31374085/installing-adb-on-macos
     buildTypes {
         release {
+            //debuggable true //remove for production build
+            //https://stackoverflow.com/questions/23005084/app-on-release-crashes-while-on-debug-doesnt
+            //https://medium.com/@trionkidnapper/stripping-log-statements-using-proguard-73dedc68ee97
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //https://stackoverflow.com/questions/27081347/how-can-deploy-signed-apk-when-click-run-in-android-studio
+            signingConfig signingConfigs.debug
         }
     }
     testOptions {

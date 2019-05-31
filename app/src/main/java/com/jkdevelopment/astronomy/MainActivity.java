@@ -605,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
             out.close();
 
             /*Get the bitmap file uri using the file provider class.*/
-            bitmapUri = FileProvider.getUriForFile(this, "com.example.nasapp.fileprovider", file);
+            bitmapUri = FileProvider.getUriForFile(this, "com.jkdevelopment.astronomy.fileprovider", file);
         }catch(IOException e){
             e.printStackTrace();
         }
