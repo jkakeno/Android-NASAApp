@@ -118,8 +118,8 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                 progressDialog.cancel();
                 currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-                Log.d(TAG,"Latitude: " + new DecimalFormat("##.######").format(currentLocation.latitude) + '\n'
-                        + "Longitude: " + new DecimalFormat("###.######").format(currentLocation.longitude));
+                Log.d(TAG,"Latitude: " + String.valueOf(currentLocation.latitude) + '\n'
+                        + "Longitude: " + String.valueOf(currentLocation.longitude));
 
                 LocationPickFragment locationPickFragment = LocationPickFragment.newInstance(currentLocation);
                 fragmentManager.beginTransaction().replace(R.id.root, locationPickFragment, LOCATION_PICK_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
@@ -355,12 +355,12 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
 
         earthImages.clear();
 
-        Log.d(TAG,"Latitude: " + new DecimalFormat("##.######").format(currentLocation.latitude) + '\n'
-                + "Longitude: " + new DecimalFormat("###.######").format(currentLocation.longitude) + '\n'
+        Log.d(TAG,"Latitude: " + String.valueOf(currentLocation.latitude) + '\n'
+                + "Longitude: " + String.valueOf(currentLocation.longitude) + '\n'
                 + "Date: " + begindate);
 
-        final String lat = new DecimalFormat("##.######").format(currentLocation.latitude);
-        final String lon = new DecimalFormat("###.######").format(currentLocation.longitude);
+        final String lat = String.valueOf(currentLocation.latitude);
+        final String lon = String.valueOf(currentLocation.longitude);
 
         /*Get an Observable Asset. This api call returns an observable as defined in the ApiInterface.*/
         assetsAPIInterface.getAssets(lon,lat,begindate).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Assets>() {
