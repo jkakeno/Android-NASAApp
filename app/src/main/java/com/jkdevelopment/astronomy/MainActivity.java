@@ -14,13 +14,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 import com.jkdevelopment.astronomy.Model.Apod;
@@ -51,7 +51,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
                 progressDialog.cancel();
                 currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-                Log.d(TAG,"Latitude: " + new DecimalFormat("##.######").format(currentLocation.latitude) + '\n'
-                        + "Longitude: " + new DecimalFormat("###.######").format(currentLocation.longitude));
+                Log.d(TAG,"Latitude: " + String.valueOf(currentLocation.latitude) + '\n'
+                        + "Longitude: " + String.valueOf(currentLocation.longitude));
 
                 LocationPickFragment locationPickFragment = LocationPickFragment.newInstance(currentLocation);
                 fragmentManager.beginTransaction().replace(R.id.root, locationPickFragment, LOCATION_PICK_FRAGMENT).addToBackStack(COVER_LIST_FRAGMENT).commit();
@@ -230,11 +229,11 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
         /*Set up the covers with static content.*/
         marsCover = new Cover("MARS");
         marsCover.setImageTitle("Rover Photos");
-        marsCover.setImageResource(Uri.parse("android.resource://com.example.nasapp/" + R.drawable.cover_mars));
+        marsCover.setImageResource(Uri.parse("android.resource://com.jkdevelopment.astronomy/" + R.drawable.cover_mars));
 
         searchCover = new Cover("SEARCH");
         searchCover.setImageTitle("NASA Image Library");
-        searchCover.setImageResource(Uri.parse("android.resource://com.example.nasapp/" + R.drawable.cover_library));
+        searchCover.setImageResource(Uri.parse("android.resource://com.jkdevelopment.astronomy/" + R.drawable.cover_library));
     }
 
     @Override
@@ -351,19 +350,19 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
     }
 
     @Override
-    public void onGetEarthImageryInteraction(LatLng currentLocation, String begindate) {
+    public void onGetEarthImageryInteraction(LatLng currentLocation, String date) {
 
         earthImages.clear();
 
-        Log.d(TAG,"Latitude: " + new DecimalFormat("##.######").format(currentLocation.latitude) + '\n'
-                + "Longitude: " + new DecimalFormat("###.######").format(currentLocation.longitude) + '\n'
-                + "Date: " + begindate);
+        Log.d(TAG,"Latitude: " + String.valueOf(currentLocation.latitude) + '\n'
+                + "Longitude: " + String.valueOf(currentLocation.longitude) + '\n'
+                + "Date: " + date);
 
-        final String lat = new DecimalFormat("##.######").format(currentLocation.latitude);
-        final String lon = new DecimalFormat("###.######").format(currentLocation.longitude);
+        final String lat = String.valueOf(currentLocation.latitude);
+        final String lon = String.valueOf(currentLocation.longitude);
 
         /*Get an Observable Asset. This api call returns an observable as defined in the ApiInterface.*/
-        assetsAPIInterface.getAssets(lon,lat,begindate).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Assets>() {
+        assetsAPIInterface.getAssets(lon,lat,date).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Assets>() {
             @Override
             public void onSubscribe(Disposable d) {
                 Log.d(TAG, "Assets Observable onSubscribed()");
@@ -605,7 +604,7 @@ public class MainActivity extends AppCompatActivity implements InteractionListen
             out.close();
 
             /*Get the bitmap file uri using the file provider class.*/
-            bitmapUri = FileProvider.getUriForFile(this, "com.example.nasapp.fileprovider", file);
+            bitmapUri = FileProvider.getUriForFile(this, "com.jkdevelopment.astronomy.fileprovider", file);
         }catch(IOException e){
             e.printStackTrace();
         }

@@ -1,15 +1,14 @@
 <resources>
-    <string name="app_name">NASA</string>
+    <string name="app_name">"AstroPics"</string>
 
     <!--Hints-->
-    <string name="date_hint">Enter a start date...</string>
-    <string name="select_camera_hint">Select a camera...</string>
-    <string name="sol_hint">Enter a Martian sol...</string>
+    <string name="date_hint">Enter a start date…</string>
+    <string name="select_camera_hint">Select a camera…</string>
+    <string name="sol_hint">Enter a Martian sol…</string>
     <string name="key_word_hint">Enter key word</string>
 
     <!--Labels-->
     <string name="get_images">GET IMAGES</string>
-    <string name="nasa_icon_title">NASA</string>
     <string name="rover_grid_title">ROVER</string>
     <string name="camera_grid_title">CAMERA</string>
     <string name="share_image">SHARE</string>

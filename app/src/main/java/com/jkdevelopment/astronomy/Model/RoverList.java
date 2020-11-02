@@ -40,9 +40,9 @@ public class RoverList implements Parcelable{
 
     public ArrayList<Rover> getRoverList() {
         roverList = new ArrayList<>();
-        curiosity = new Rover("curiosity", Uri.parse("android.resource://com.example.nasapp/" + R.drawable.rover_curiosity));
-        opportunity = new Rover("opportunity", Uri.parse("android.resource://com.example.nasapp/" + R.drawable.rover_opportunity));
-        spirit = new Rover("spirit", Uri.parse("android.resource://com.example.nasapp/" + R.drawable.rover_spirit));
+        curiosity = new Rover("curiosity", Uri.parse("android.resource://com.jkdevelopment.astronomy/" + R.drawable.rover_curiosity));
+        opportunity = new Rover("opportunity", Uri.parse("android.resource://com.jkdevelopment.astronomy/" + R.drawable.rover_opportunity));
+        spirit = new Rover("spirit", Uri.parse("android.resource://com.jkdevelopment.astronomy/" + R.drawable.rover_spirit));
         roverList.add(curiosity);
         roverList.add(opportunity);
         roverList.add(spirit);
